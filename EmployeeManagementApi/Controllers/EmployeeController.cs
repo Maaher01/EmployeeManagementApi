@@ -67,6 +67,28 @@ namespace EmployeeManagementApi.Controllers
             return Ok(employee);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateEmployee(int id, [FromBody] Employee employee)
+        {
+            if(employee == null) return BadRequest("Employee data is required");
+
+            if (string.IsNullOrWhiteSpace(employee.Name)) return BadRequest("Employee name is required");
+
+            if (id != employee.Id) return BadRequest("Employee ID mismatch");
+
+            var existingEmployee = _context.Employees.Find(id);
+            if (existingEmployee == null) return NotFound();
+
+            existingEmployee.Name = employee.Name;
+            existingEmployee.DepartmentId = employee.DepartmentId;
+            existingEmployee.DateOfJoining = employee.DateOfJoining;
+            existingEmployee.Image = employee.Image;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(existingEmployee);
+        }
+
         [HttpDelete("{id}")]
         public IActionResult DeleteEmployee(int id)
         {
