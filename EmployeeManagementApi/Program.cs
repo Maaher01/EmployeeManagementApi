@@ -1,5 +1,6 @@
 using EmployeeManagementApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,13 @@ builder.Services.AddDbContext<EmployeeDbContext>(options =>
 var app = builder.Build();
 
 app.UseCors("AllowedOrigins");
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "Photos")),
+    RequestPath = "/Photos"
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
