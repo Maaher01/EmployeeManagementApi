@@ -1,5 +1,6 @@
 ﻿using EmployeeManagementApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagementApi.Controllers
 {
@@ -17,52 +18,36 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetEmployees() 
+        public async Task<IActionResult> GetEmployees() 
         { 
-            var employees = _context.Employees.ToList();
+            var employees = await _context.Employees.ToListAsync();
 
             return Ok(employees);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetEmployeeById(int id)
+        public async Task<IActionResult> GetEmployeeById(int id)
         {
-            var employee = _context.Employees.Find(id);
+            var employee = await _context.Employees.FindAsync(id);
 
-            if (employee == null)
-            {
-                return NotFound();
-            }
+            if (employee == null) return NotFound();
 
             return Ok(employee);
         }
 
         [HttpPost]
-        public IActionResult AddEmployee([FromBody] Employee employee)
+        public async Task<IActionResult> AddEmployee([FromBody] Employee employee)
         {
-            if (employee == null)
-            {
-                return BadRequest("Employee data is required");
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if (string.IsNullOrEmpty(employee.Name))
-            {
-                return BadRequest("Employee name is required");
-            }
-
-            if (employee.DepartmentId <= 0)
-            {
-                return BadRequest("Valid department is required");
-            }
-
-            var departmentExists = _context.Departments.Any(d => d.Id == employee.DepartmentId);
+            var departmentExists = await _context.Departments.AnyAsync(d => d.Id == employee.DepartmentId);
             if (!departmentExists)
             {
                 return BadRequest("Department does not exist");
             }
 
             _context.Employees.Add(employee);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(employee);
         }
@@ -70,13 +55,11 @@ namespace EmployeeManagementApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEmployee(int id, [FromBody] Employee employee)
         {
-            if(employee == null) return BadRequest("Employee data is required");
-
-            if (string.IsNullOrWhiteSpace(employee.Name)) return BadRequest("Employee name is required");
+            if(!ModelState.IsValid) return BadRequest(ModelState);
 
             if (id != employee.Id) return BadRequest("Employee ID mismatch");
 
-            var existingEmployee = _context.Employees.Find(id);
+            var existingEmployee = await _context.Employees.FindAsync(id);
             if (existingEmployee == null) return NotFound();
 
             existingEmployee.Name = employee.Name;
@@ -90,9 +73,9 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteEmployee(int id)
+        public async Task<IActionResult> DeleteEmployee(int id)
         {
-            var employee = _context.Employees.Find(id);
+            var employee = await _context.Employees.FindAsync(id);
 
             if(employee == null)
             {
@@ -100,7 +83,7 @@ namespace EmployeeManagementApi.Controllers
             }
 
             _context.Employees.Remove(employee);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

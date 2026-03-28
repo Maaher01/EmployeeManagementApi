@@ -1,5 +1,6 @@
 ﻿using EmployeeManagementApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagementApi.Controllers
 {
@@ -15,17 +16,17 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetDepartments() 
+        public async Task<IActionResult> GetDepartments() 
         {
-            var departments = _context.Departments.ToList();
+            var departments = await _context.Departments.ToListAsync();
 
             return Ok(departments);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetDepartmentById(int id)
+        public async Task<IActionResult> GetDepartmentById(int id)
         {
-            var department = _context.Departments.Find(id);
+            var department = await _context.Departments.FindAsync(id);
 
             if (department == null)
             {
@@ -36,47 +37,43 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddDepartment([FromBody] Department department) 
+        public async Task<IActionResult> AddDepartment([FromBody] Department department) 
         {
-            if (department == null || string.IsNullOrEmpty(department.Name)) 
-            { 
-                return BadRequest("Invalid department name");        
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             _context.Departments.Add(department);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(department);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateDepartment(int id, [FromBody] Department department)
+        public async Task<IActionResult> UpdateDepartment(int id, [FromBody] Department department)
         {
-            var existingDepartment = _context.Departments.Find(id);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if (existingDepartment == null)
-            {
-                return NotFound();
-            }
+            var existingDepartment = await _context.Departments.FindAsync(id);
+
+            if (existingDepartment == null) return NotFound();
 
             existingDepartment.Name = department.Name;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(existingDepartment);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteDepartment(int id)
+        public async Task<IActionResult> DeleteDepartment(int id)
         {
-            var department = _context.Departments.Find(id);
+            var department = await _context.Departments.FindAsync(id);
 
             if(department == null)
             {
                 return NotFound();
             }
 
-            bool hasEmployees = _context.Employees.Any(e => e.DepartmentId == id);
+            bool hasEmployees = await _context.Employees.AnyAsync(e => e.DepartmentId == id);
 
             if (hasEmployees)
             {
@@ -84,7 +81,7 @@ namespace EmployeeManagementApi.Controllers
             }
 
             _context.Departments.Remove(department);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
