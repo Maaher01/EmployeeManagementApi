@@ -1,6 +1,7 @@
 ﻿using EmployeeManagementApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using EmployeeManagementApi.Dtos.Employee;
 
 namespace EmployeeManagementApi.Controllers
 {
@@ -20,7 +21,15 @@ namespace EmployeeManagementApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetEmployees() 
         { 
-            var employees = await _context.Employees.ToListAsync();
+            var employees = await _context.Employees
+                .Select(e => new EmployeeGetDto
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    DepartmentName = e.Department.Name,
+                    DateOfJoining = e.DateOfJoining,
+                    Image = e.Image
+                }).ToListAsync();
 
             return Ok(employees);
         }
@@ -32,44 +41,74 @@ namespace EmployeeManagementApi.Controllers
 
             if (employee == null) return NotFound();
 
-            return Ok(employee);
+            var result = new EmployeeGetDto
+            {
+                Id = employee.Id,
+                Name = employee.Name,
+                DepartmentName = (await _context.Departments.FindAsync(employee.DepartmentId))?.Name,
+                DateOfJoining = employee.DateOfJoining,
+                Image = employee.Image
+            };
+
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddEmployee([FromBody] Employee employee)
+        public async Task<IActionResult> AddEmployee([FromBody] EmployeeCreateUpdateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var departmentExists = await _context.Departments.AnyAsync(d => d.Id == employee.DepartmentId);
-            if (!departmentExists)
+            var departmentExists = await _context.Departments.AnyAsync(d => d.Id == dto.DepartmentId);
+            if (!departmentExists) return BadRequest("Department does not exist");
+
+            var employee = new Employee
             {
-                return BadRequest("Department does not exist");
-            }
+                Name = dto.Name,
+                DepartmentId = dto.DepartmentId,
+                DateOfJoining = dto.DateOfJoining,
+                Image = dto.Image
+            };
 
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
 
-            return Ok(employee);
+            var result = new EmployeeGetDto
+            {
+                Id = employee.Id,
+                Name = employee.Name,
+                DepartmentName = (await _context.Departments.FindAsync(employee.DepartmentId))?.Name,
+                DateOfJoining = employee.DateOfJoining,
+                Image = employee.Image
+            };
+
+            return Ok(result);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEmployee(int id, [FromBody] Employee employee)
+        public async Task<IActionResult> UpdateEmployee(int id, [FromBody] EmployeeCreateUpdateDto dto)
         {
             if(!ModelState.IsValid) return BadRequest(ModelState);
-
-            if (id != employee.Id) return BadRequest("Employee ID mismatch");
 
             var existingEmployee = await _context.Employees.FindAsync(id);
             if (existingEmployee == null) return NotFound();
 
-            existingEmployee.Name = employee.Name;
-            existingEmployee.DepartmentId = employee.DepartmentId;
-            existingEmployee.DateOfJoining = employee.DateOfJoining;
-            existingEmployee.Image = employee.Image;
+            existingEmployee.Name = dto.Name;
+            existingEmployee.DepartmentId = dto.DepartmentId;
+            existingEmployee.DateOfJoining = dto.DateOfJoining;
+            existingEmployee.Image = dto.Image;
 
             await _context.SaveChangesAsync();
 
-            return Ok(existingEmployee);
+            var result = new EmployeeGetDto
+            {
+                Id = existingEmployee.Id,
+                Name = existingEmployee.Name,
+                DepartmentName = (await _context.Departments.FindAsync(existingEmployee.DepartmentId))?.Name,
+                DateOfJoining = existingEmployee.DateOfJoining,
+                Image = existingEmployee.Image
+            };
+
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
