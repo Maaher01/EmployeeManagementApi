@@ -18,16 +18,25 @@ export const routes: Routes = [
           import('./pages/pages.routes').then((m) => m.PagesRoutes),
       },
       {
-        path: 'ui-components',
+        path: 'employee',
         loadChildren: () =>
-          import('./pages/ui-components/ui-components.routes').then(
-            (m) => m.UiComponentsRoutes
+          import('./pages/employee/employee.routes').then(
+            (m) => m.EmployeeRoutes,
           ),
       },
       {
-        path: 'extra',
+        path: 'department',
         loadChildren: () =>
-          import('./pages/extra/extra.routes').then((m) => m.ExtraRoutes),
+          import('./pages/department/department.routes').then(
+            (m) => m.DepartmentRoutes,
+          ),
+      },
+      {
+        path: 'ui-components',
+        loadChildren: () =>
+          import('./pages/ui-components/ui-components.routes').then(
+            (m) => m.UiComponentsRoutes,
+          ),
       },
     ],
   },
@@ -39,7 +48,7 @@ export const routes: Routes = [
         path: 'authentication',
         loadChildren: () =>
           import('./pages/authentication/authentication.routes').then(
-            (m) => m.AuthenticationRoutes
+            (m) => m.AuthenticationRoutes,
           ),
       },
     ],

@@ -1,0 +1,18 @@
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment.development';
+import { Employee } from '../models/employee.interface';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class EmployeeService {
+  apiUrl = environment.baseUrl + 'Employee';
+
+  private _httpClient = inject(HttpClient);
+
+  getAllEmployees(): Observable<Employee[]> {
+    return this._httpClient.get<Employee[]>(this.apiUrl);
+  }
+}
