@@ -8,7 +8,7 @@ import { Department } from '../models/department.interface';
   providedIn: 'root',
 })
 export class DepartmentService {
-  apiUrl = environment.baseUrl + 'Department';
+  apiUrl = environment.baseUrl + 'Department/';
 
   private _httpClient = inject(HttpClient);
 
@@ -18,5 +18,9 @@ export class DepartmentService {
 
   getAllDepartments(): Observable<Department[]> {
     return this._httpClient.get<Department[]>(this.apiUrl);
+  }
+
+  deleteDepartment(id: number) {
+    return this._httpClient.delete(this.apiUrl + `${id}`);
   }
 }

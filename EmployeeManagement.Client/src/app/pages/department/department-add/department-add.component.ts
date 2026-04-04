@@ -1,20 +1,45 @@
 import { Component } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
 import { Router } from '@angular/router';
 import { DepartmentService } from 'src/app/services/department.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-department-add',
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatRadioModule,
+    MatButtonModule,
+    MatCardModule,
+    MatInputModule,
+    MatCheckboxModule,
+  ],
   templateUrl: './department-add.component.html',
-  styleUrl: './department-add.component.scss',
 })
 export class DepartmentAddComponent {
   responseData: any;
   errorMessage: any;
 
-  departmentAddForm = this.fb.group({
-    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
+  departmentAddForm = this.fb.nonNullable.group({
+    name: ['', [Validators.required, Validators.minLength(2)]],
   });
 
   constructor(
@@ -34,7 +59,15 @@ export class DepartmentAddComponent {
           this.router.navigate(['department']);
         },
         error: (err) => {
-          this.errorMessage = err.error.message;
+          console.log('Error message', err);
+          if (err.status === 0) {
+            // Network error (no connection, server down, CORS, etc.)
+            this.errorMessage =
+              'Error creating department. Please try again later.';
+          } else if (err.status === 400) {
+            // Bad request / model validation
+            this.errorMessage = err.error;
+          }
         },
       });
   }

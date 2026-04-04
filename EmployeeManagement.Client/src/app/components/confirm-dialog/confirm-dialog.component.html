@@ -1,0 +1,11 @@
+<div>
+    <h2 mat-dialog-title>{{ data.title }}</h2>
+    <mat-icon (click)="dialogRef.close(false)">close</mat-icon>
+</div>
+<mat-dialog-content>{{ data.message }}</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button style="background-color: #6c757d; color: white;" (click)="dialogRef.close(false)">Cancel</button>
+    <button mat-flat-button style="background-color: #dc3545; color: white;" (click)="dialogRef.close(true)">
+        Delete
+    </button>
+</mat-dialog-actions>

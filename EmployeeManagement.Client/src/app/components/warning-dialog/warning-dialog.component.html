@@ -1,0 +1,8 @@
+<div class="flex">
+    <h2 mat-dialog-title>{{ data.title }}</h2>
+    <mat-icon>close</mat-icon>
+</div>
+<mat-dialog-content>{{ data.message }}</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button style="background-color: #6c757d; color: white;" (click)="dialogRef.close(false)">Close</button>
+</mat-dialog-actions>
