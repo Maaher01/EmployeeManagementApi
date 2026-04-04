@@ -50,6 +50,13 @@ namespace EmployeeManagementApi.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            // Check duplicate department name
+            bool isDuplicate = await _context.Departments.AnyAsync(d => d.Name.ToLower() == dto.Name.ToLower());
+            if(isDuplicate)
+            {
+                return BadRequest("Department name already exists");
+            }
+
             var department = new Department
             {
                 Name = dto.Name
