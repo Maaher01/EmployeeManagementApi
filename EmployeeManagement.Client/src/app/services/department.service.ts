@@ -20,6 +20,10 @@ export class DepartmentService {
     return this._httpClient.get<Department[]>(this.apiUrl);
   }
 
+  editDepartment(id: number, editPayload: any) {
+    return this._httpClient.put(this.apiUrl + `${id}`, editPayload);
+  }
+
   deleteDepartment(id: number) {
     return this._httpClient.delete(this.apiUrl + `${id}`);
   }

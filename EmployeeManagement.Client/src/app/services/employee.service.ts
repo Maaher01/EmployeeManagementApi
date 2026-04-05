@@ -8,11 +8,15 @@ import { Employee } from '../models/employee.interface';
   providedIn: 'root',
 })
 export class EmployeeService {
-  apiUrl = environment.baseUrl + 'Employee';
+  apiUrl = environment.baseUrl + 'Employee/';
 
   private _httpClient = inject(HttpClient);
 
   getAllEmployees(): Observable<Employee[]> {
     return this._httpClient.get<Employee[]>(this.apiUrl);
+  }
+
+  deleteEmployee(id: number) {
+    return this._httpClient.delete(this.apiUrl + `${id}`);
   }
 }

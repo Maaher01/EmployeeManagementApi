@@ -5,12 +5,13 @@ import { MaterialModule } from 'src/app/material.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { Department } from 'src/app/models/department.interface';
 import { DepartmentService } from 'src/app/services/department.service';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { WarningDialogComponent } from 'src/app/components/warning-dialog/warning-dialog.component';
+import { DepartmentEditDialogComponent } from 'src/app/components/department-edit-dialog/department-edit-dialog.component';
 
 @Component({
   selector: 'app-department-list',
@@ -50,6 +51,20 @@ export class DepartmentListComponent implements OnInit {
         this.errorResponse = err.error.message;
       },
     });
+  }
+
+  editDepartment(department: Department) {
+    const dialogConf = new MatDialogConfig();
+
+    dialogConf.disableClose = true;
+    dialogConf.autoFocus = true;
+    dialogConf.width = '500px';
+    dialogConf.data = {
+      heading: 'Edit Department',
+      department: department,
+    };
+
+    this.dialog.open(DepartmentEditDialogComponent, dialogConf);
   }
 
   deleteDepartment(id: number) {

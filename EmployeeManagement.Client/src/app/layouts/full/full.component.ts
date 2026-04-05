@@ -15,6 +15,7 @@ import { HeaderComponent } from './header/header.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { AppNavItemComponent } from './sidebar/nav-item/nav-item.component';
 import { navItems } from './sidebar/sidebar-data';
+import { CommonModule } from '@angular/common';
 
 const MOBILE_VIEW = 'screen and (max-width: 768px)';
 const TABLET_VIEW = 'screen and (min-width: 769px) and (max-width: 1024px)';
@@ -22,6 +23,7 @@ const TABLET_VIEW = 'screen and (min-width: 769px) and (max-width: 1024px)';
 @Component({
   selector: 'app-full',
   imports: [
+    CommonModule,
     RouterModule,
     AppNavItemComponent,
     MaterialModule,
@@ -36,6 +38,7 @@ const TABLET_VIEW = 'screen and (min-width: 769px) and (max-width: 1024px)';
 })
 export class FullComponent implements OnInit {
   navItems = navItems;
+  today: Date = new Date();
 
   @ViewChild('leftsidenav')
   public sidenav: MatSidenav;
