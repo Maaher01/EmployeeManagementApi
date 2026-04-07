@@ -12,6 +12,10 @@ export class EmployeeService {
 
   private _httpClient = inject(HttpClient);
 
+  addEmployee(addPayload: Employee): Observable<Employee> {
+    return this._httpClient.post<Employee>(this.apiUrl, addPayload);
+  }
+
   getAllEmployees(): Observable<Employee[]> {
     return this._httpClient.get<Employee[]>(this.apiUrl);
   }

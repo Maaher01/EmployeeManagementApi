@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { EmployeeListComponent } from './employee-list/employee-list.component';
+import { EmployeeAddComponent } from './employee-add/employee-add.component';
 
 export const EmployeeRoutes: Routes = [
   {
@@ -8,7 +9,12 @@ export const EmployeeRoutes: Routes = [
     children: [
       {
         path: '',
+        pathMatch: 'full',
         component: EmployeeListComponent,
+      },
+      {
+        path: 'add',
+        component: EmployeeAddComponent,
       },
     ],
   },

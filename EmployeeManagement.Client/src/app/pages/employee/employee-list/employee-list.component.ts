@@ -8,9 +8,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { Employee } from 'src/app/models/employee.interface';
 import { EmployeeService } from 'src/app/services/employee.service';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { WarningDialogComponent } from 'src/app/components/warning-dialog/warning-dialog.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-employee-list',
@@ -22,6 +23,7 @@ import { WarningDialogComponent } from 'src/app/components/warning-dialog/warnin
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
+    RouterModule,
   ],
   templateUrl: './employee-list.component.html',
 })
