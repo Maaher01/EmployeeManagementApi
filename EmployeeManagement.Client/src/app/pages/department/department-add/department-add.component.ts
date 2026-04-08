@@ -51,7 +51,6 @@ export class DepartmentAddComponent {
           this.router.navigate(['department']);
         },
         error: (err) => {
-          console.log('Error message', err);
           if (err.status === 0) {
             // Network error (no connection, server down, CORS, etc.)
             this.errorMessage =

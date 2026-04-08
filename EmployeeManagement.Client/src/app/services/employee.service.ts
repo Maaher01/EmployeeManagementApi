@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { Employee } from '../models/employee.interface';
+import { EmployeeAdd } from '../models/employee-add.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ export class EmployeeService {
 
   private _httpClient = inject(HttpClient);
 
-  addEmployee(addPayload: Employee): Observable<Employee> {
+  addEmployee(addPayload: EmployeeAdd): Observable<Employee> {
     return this._httpClient.post<Employee>(this.apiUrl, addPayload);
   }
 

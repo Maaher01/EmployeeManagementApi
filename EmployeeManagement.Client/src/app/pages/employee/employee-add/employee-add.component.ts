@@ -1,12 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {
-  AbstractControl,
   FormBuilder,
   FormsModule,
   ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,6 +14,10 @@ import { EmployeeService } from 'src/app/services/employee.service';
 import { Router } from '@angular/router';
 import { Department } from 'src/app/models/department.interface';
 import { DepartmentService } from 'src/app/services/department.service';
+import {
+  fileSizeValidator,
+  fileTypeValidator,
+} from 'src/app/shared/validators/file.validators';
 
 @Component({
   selector: 'app-employee-add',
@@ -40,7 +41,14 @@ export class EmployeeAddComponent {
     name: ['', [Validators.required]],
     departmentId: ['', [Validators.required]],
     dateOfJoining: ['', [Validators.required]],
-    image: [null, [Validators.required, this.fileTypeValidator]],
+    image: [
+      null,
+      [
+        Validators.required,
+        fileTypeValidator(['image/jpg', 'image/png']),
+        fileSizeValidator(2),
+      ],
+    ],
   });
 
   constructor(
@@ -49,16 +57,6 @@ export class EmployeeAddComponent {
     private departmentService: DepartmentService,
     private router: Router,
   ) {}
-
-  fileTypeValidator(allowedTypes: string[]): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const file = control.value as File;
-      if (!file) return null;
-      return allowedTypes.includes(file.type)
-        ? null
-        : { invalidFileType: true };
-    };
-  }
 
   getAllDepartments() {
     this.departmentService.getAllDepartments().subscribe({
@@ -69,5 +67,28 @@ export class EmployeeAddComponent {
         this.errorMessage = err.error.message;
       },
     });
+  }
+
+  addEmployee() {
+    this.employeeService
+      .addEmployee(this.employeeAddForm.getRawValue())
+      .subscribe({
+        next: (result) => {
+          this.responseData = result;
+          this.employeeAddForm.reset();
+          this.errorMessage = null;
+          this.router.navigate(['employee']);
+        },
+        error: (err) => {
+          if (err.status === 0) {
+            // Network error (no connection, server down, CORS, etc.)
+            this.errorMessage =
+              'Error creating employee. Please try again later.';
+          } else if (err.status === 400) {
+            // Bad request / model validation
+            this.errorMessage = err.error;
+          }
+        },
+      });
   }
 }
