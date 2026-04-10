@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormsModule,
@@ -18,6 +18,12 @@ import {
   fileSizeValidator,
   fileTypeValidator,
 } from 'src/app/shared/validators/file.validators';
+import { MatOption, MatSelect } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { EmployeeAdd } from 'src/app/models/employee-add.interface';
+import { MatIcon } from '@angular/material/icon';
+import { MaterialModule } from 'src/app/material.module';
 
 @Component({
   selector: 'app-employee-add',
@@ -29,13 +35,20 @@ import {
     MatButtonModule,
     MatCardModule,
     MatInputModule,
+    MatSelect,
+    MatOption,
+    MatDatepickerModule,
+    MaterialModule,
   ],
+  providers: [provideNativeDateAdapter(), DatePipe],
   templateUrl: './employee-add.component.html',
 })
-export class EmployeeAddComponent {
+export class EmployeeAddComponent implements OnInit {
   responseData: any;
   errorMessage: any;
   departments: Department[];
+  currentFile?: File;
+  fileName = '';
 
   employeeAddForm = this.fb.nonNullable.group({
     name: ['', [Validators.required]],
@@ -43,19 +56,20 @@ export class EmployeeAddComponent {
     dateOfJoining: ['', [Validators.required]],
     image: [
       null,
-      [
-        Validators.required,
-        fileTypeValidator(['image/jpg', 'image/png']),
-        fileSizeValidator(2),
-      ],
+      [fileTypeValidator(['image/jpg', 'image/png']), fileSizeValidator(2)],
     ],
   });
+
+  ngOnInit(): void {
+    this.getAllDepartments();
+  }
 
   constructor(
     private fb: FormBuilder,
     private employeeService: EmployeeService,
     private departmentService: DepartmentService,
     private router: Router,
+    private datePipe: DatePipe,
   ) {}
 
   getAllDepartments() {
@@ -70,25 +84,31 @@ export class EmployeeAddComponent {
   }
 
   addEmployee() {
-    this.employeeService
-      .addEmployee(this.employeeAddForm.getRawValue())
-      .subscribe({
-        next: (result) => {
-          this.responseData = result;
-          this.employeeAddForm.reset();
-          this.errorMessage = null;
-          this.router.navigate(['employee']);
-        },
-        error: (err) => {
-          if (err.status === 0) {
-            // Network error (no connection, server down, CORS, etc.)
-            this.errorMessage =
-              'Error creating employee. Please try again later.';
-          } else if (err.status === 400) {
-            // Bad request / model validation
-            this.errorMessage = err.error;
-          }
-        },
-      });
+    const formValue = this.employeeAddForm.getRawValue();
+
+    const payload: EmployeeAdd = {
+      ...formValue,
+      dateOfJoining:
+        this.datePipe.transform(formValue.dateOfJoining, 'yyyy-MM-dd') ?? '',
+    };
+
+    this.employeeService.addEmployee(payload).subscribe({
+      next: (result) => {
+        this.responseData = result;
+        this.employeeAddForm.reset();
+        this.errorMessage = null;
+        this.router.navigate(['employee']);
+      },
+      error: (err) => {
+        if (err.status === 0) {
+          // Network error (no connection, server down, CORS, etc.)
+          this.errorMessage =
+            'Error creating employee. Please try again later.';
+        } else if (err.status === 400) {
+          // Bad request / model validation
+          this.errorMessage = err.error;
+        }
+      },
+    });
   }
 }
