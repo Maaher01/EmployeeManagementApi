@@ -26,6 +26,7 @@ namespace EmployeeManagementApi.Controllers
                 {
                     Id = e.Id,
                     Name = e.Name,
+                    DepartmentId = e.DepartmentId,
                     DepartmentName = e.Department.Name,
                     DateOfJoining = e.DateOfJoining,
                     Image = e.Image
@@ -45,6 +46,7 @@ namespace EmployeeManagementApi.Controllers
             {
                 Id = employee.Id,
                 Name = employee.Name,
+                DepartmentId = employee.DepartmentId,
                 DepartmentName = (await _context.Departments.FindAsync(employee.DepartmentId))?.Name,
                 DateOfJoining = employee.DateOfJoining,
                 Image = employee.Image
@@ -76,6 +78,7 @@ namespace EmployeeManagementApi.Controllers
             {
                 Id = employee.Id,
                 Name = employee.Name,
+                DepartmentId = employee.DepartmentId,
                 DepartmentName = (await _context.Departments.FindAsync(employee.DepartmentId))?.Name,
                 DateOfJoining = employee.DateOfJoining,
                 Image = employee.Image
@@ -103,6 +106,7 @@ namespace EmployeeManagementApi.Controllers
             {
                 Id = existingEmployee.Id,
                 Name = existingEmployee.Name,
+                DepartmentId = existingEmployee.DepartmentId,
                 DepartmentName = (await _context.Departments.FindAsync(existingEmployee.DepartmentId))?.Name,
                 DateOfJoining = existingEmployee.DateOfJoining,
                 Image = existingEmployee.Image
