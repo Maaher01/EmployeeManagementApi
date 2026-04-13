@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 
 import { EmployeeListComponent } from './employee-list/employee-list.component';
 import { EmployeeAddComponent } from './employee-add/employee-add.component';
+import { EmployeeEditComponent } from './employee-edit/employee-edit.component';
 
 export const EmployeeRoutes: Routes = [
   {
@@ -15,6 +16,10 @@ export const EmployeeRoutes: Routes = [
       {
         path: 'add',
         component: EmployeeAddComponent,
+      },
+      {
+        path: 'edit/:id',
+        component: EmployeeEditComponent,
       },
     ],
   },

@@ -17,8 +17,22 @@ export class EmployeeService {
     return this._httpClient.post<Employee>(this.apiUrl, addPayload);
   }
 
+  uploadImage(formData: FormData): Observable<string> {
+    return this._httpClient.post(this.apiUrl + `UploadImage`, formData, {
+      responseType: 'text',
+    });
+  }
+
   getAllEmployees(): Observable<Employee[]> {
     return this._httpClient.get<Employee[]>(this.apiUrl);
+  }
+
+  getEmployeeById(id: number) {
+    return this._httpClient.get<Employee>(this.apiUrl + `${id}`);
+  }
+
+  editEmployee(id: number, editPayload: any) {
+    return this._httpClient.put(this.apiUrl + `${id}`, editPayload);
   }
 
   deleteEmployee(id: number) {

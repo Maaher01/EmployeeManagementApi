@@ -31,13 +31,6 @@ export const routes: Routes = [
             (m) => m.DepartmentRoutes,
           ),
       },
-      {
-        path: 'ui-components',
-        loadChildren: () =>
-          import('./pages/ui-components/ui-components.routes').then(
-            (m) => m.UiComponentsRoutes,
-          ),
-      },
     ],
   },
   {
