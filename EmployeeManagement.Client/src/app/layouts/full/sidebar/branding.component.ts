@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
       <img
         src="assets/images/logos/logo.png"
         class="align-middle m-2"
-        width="125"
+        width="175"
         alt="logo"
       />
     </a>

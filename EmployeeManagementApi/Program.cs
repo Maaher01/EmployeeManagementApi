@@ -1,4 +1,5 @@
 using EmployeeManagementApi.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
@@ -26,6 +27,10 @@ builder.Services.AddDbContext<EmployeeDbContext>(options =>
 //builder.Services.AddDbContext<EmployeeDbContext>(options => 
 //    options.UseInMemoryDatabase("TestDb")
 //);
+
+builder.Services
+    .AddIdentityApiEndpoints<IdentityUser>()
+    .AddEntityFrameworkStores<EmployeeDbContext>();
 
 var app = builder.Build();
 
