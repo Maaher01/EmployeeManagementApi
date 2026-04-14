@@ -7,11 +7,11 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-side-login',
+  selector: 'app-login',
   imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule],
-  templateUrl: './side-login.component.html',
+  templateUrl: './login.component.html',
 })
-export class AppSideLoginComponent {
+export class LoginComponent {
   constructor(private router: Router) {}
 
   form = new FormGroup({

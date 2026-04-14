@@ -6,11 +6,11 @@ import { MaterialModule } from 'src/app/material.module';
 
 @Component({
   selector: 'app-blank',
-  templateUrl: './blank.component.html',
+  templateUrl: './auth.component.html',
   styleUrls: [],
   imports: [RouterOutlet, MaterialModule],
 })
-export class BlankComponent {
+export class AuthComponent {
   private htmlElement!: HTMLHtmlElement;
 
   options = this.settings.getOptions();

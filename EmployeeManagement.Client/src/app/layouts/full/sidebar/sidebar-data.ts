@@ -32,26 +32,26 @@ export const navItems: NavItem[] = [
   // {
   //   displayName: 'Login',
   //   iconName: 'solar:lock-keyhole-minimalistic-line-duotone',
-  //   route: '/authentication',
+  //   route: '/auth',
   //   children: [
   //     {
   //       displayName: 'Login',
   //       subItemIcon: true,
   //       iconName: 'solar:round-alt-arrow-right-line-duotone',
-  //       route: '/authentication/login',
+  //       route: '/auth/login',
   //     },
   //   ],
   // },
   // {
   //   displayName: 'Register',
   //   iconName: 'solar:user-plus-rounded-line-duotone',
-  //   route: '/authentication',
+  //   route: '/auth',
   //   children: [
   //     {
   //       displayName: 'Register',
   //       subItemIcon: true,
   //       iconName: 'solar:round-alt-arrow-right-line-duotone',
-  //       route: '/authentication/register',
+  //       route: '/auth/register',
   //     },
   //   ],
   // },

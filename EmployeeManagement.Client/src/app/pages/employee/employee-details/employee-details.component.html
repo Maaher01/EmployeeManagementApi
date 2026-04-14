@@ -1,0 +1,50 @@
+<mat-card class="cardWithShadow theme-card">
+    <mat-card-header>
+        <mat-card-title class="m-b-0">Employee Details</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="b-t-1">
+        @if (employee) {
+        <div class="row m-t-24">
+
+            <!-- Left: Image -->
+            <div class="col-lg-3 flex flex-col align-items-center">
+                <img [src]="imageUrl ?? 'assets/images/avatars/default.png'" alt="{{ employee.name }}"
+                    style="height: 200px; object-fit: contain; border-radius: 5%; border: 1px solid rgba(0,0,0,0.1);" />
+            </div>
+
+            <!-- Right: Details -->
+            <div class="col-lg-9">
+                <div class="row">
+
+                    <div class="col-lg-6 m-b-24">
+                        <span class="f-s-15 text-muted d-block m-b-4">Employee ID</span>
+                        <span class="f-s-17 f-w-600">{{ employee.id }}</span>
+                    </div>
+
+                    <div class="col-lg-6 m-b-24">
+                        <span class="f-s-15 text-muted d-block m-b-4">Full Name</span>
+                        <span class="f-s-17 f-w-600">{{ employee.name }}</span>
+                    </div>
+
+                    <div class="col-lg-6 m-b-24">
+                        <span class="f-s-15 text-muted d-block m-b-4">Department</span>
+                        <span class="f-s-17 f-w-600">{{ employee.departmentName ?? 'N/A' }}</span>
+                    </div>
+
+                    <div class="col-lg-6 m-b-24">
+                        <span class="f-s-15 text-muted d-block m-b-4">Date of Joining</span>
+                        <span class="f-s-17 f-w-600">{{ employee.dateOfJoining | date: 'dd, MMMM yyyy' }}</span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        } @else if (errorMessage) {
+        <mat-error>{{ errorMessage }}</mat-error>
+        } @else {
+        <p class="text-muted m-t-16">Loading...</p>
+        }
+    </mat-card-content>
+</mat-card>

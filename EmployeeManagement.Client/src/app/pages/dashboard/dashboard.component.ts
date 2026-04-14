@@ -8,7 +8,7 @@ import { AppRevenueProductComponent } from 'src/app/components/revenue-product/r
 import { AppRevenueForecastComponent } from 'src/app/components/revenue-forecast/revenue-forecast.component';
 
 @Component({
-  selector: 'app-starter',
+  selector: 'app-dashboard',
   imports: [
     MaterialModule,
     AppNewCustomersComponent,
@@ -18,7 +18,7 @@ import { AppRevenueForecastComponent } from 'src/app/components/revenue-forecast
     AppRevenueProductComponent,
     AppRevenueForecastComponent,
   ],
-  templateUrl: './starter.component.html',
+  templateUrl: './dashboard.component.html',
   encapsulation: ViewEncapsulation.None,
 })
-export class StarterComponent {}
+export class DashboardComponent {}

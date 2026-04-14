@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -23,6 +23,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
 import { DepartmentService } from 'src/app/services/department.service';
 import { MatSelect } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-employee-edit',
@@ -31,7 +32,7 @@ import { MatSelect } from '@angular/material/select';
     FormsModule,
     ReactiveFormsModule,
     MatCardModule,
-    MatIcon,
+    MatButtonModule,
     MatLabel,
     MatFormField,
     MatInputModule,
@@ -40,17 +41,20 @@ import { MatSelect } from '@angular/material/select';
     MatOption,
     MatSelect,
   ],
-  providers: [provideNativeDateAdapter()],
+  providers: [provideNativeDateAdapter(), DatePipe],
   templateUrl: './employee-edit.component.html',
 })
 export class EmployeeEditComponent implements OnInit {
   errorMessage: any;
   employee: Employee;
   departments: Department[];
+  fileName = '';
+  imageUrl: string | null = null;
+  imagePreview: string | null = null;
 
   employeeEditForm = this.fb.nonNullable.group({
     name: ['', [Validators.required]],
-    departmentId: ['', [Validators.required]],
+    departmentId: [0, [Validators.required]],
     dateOfJoining: ['', [Validators.required]],
     image: [
       null as File | null,
@@ -58,18 +62,29 @@ export class EmployeeEditComponent implements OnInit {
     ],
   });
 
+  constructor(
+    private fb: FormBuilder,
+    private employeeService: EmployeeService,
+    private departmentService: DepartmentService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private datePipe: DatePipe,
+  ) {}
+
   ngOnInit(): void {
     this.getAllDepartments();
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.employeeService.getEmployeeById(id).subscribe({
       next: (employee: Employee) => {
-        console.log(employee);
-
         this.employee = employee;
+        this.imageUrl = employee.image
+          ? 'https://localhost:7063/Photos/' + employee.image
+          : null;
+
         this.employeeEditForm.patchValue({
           name: employee.name,
-          departmentId: employee.departmentId.toString(),
+          departmentId: employee.departmentId,
           dateOfJoining: employee.dateOfJoining,
         });
       },
@@ -79,13 +94,22 @@ export class EmployeeEditComponent implements OnInit {
     });
   }
 
-  constructor(
-    private fb: FormBuilder,
-    private employeeService: EmployeeService,
-    private departmentService: DepartmentService,
-    private router: Router,
-    private route: ActivatedRoute,
-  ) {}
+  onFileChange(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0] ?? null;
+    this.employeeEditForm.controls.image.setValue(file);
+    this.employeeEditForm.controls.image.markAsTouched();
+    this.fileName = file ? file.name : '';
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      this.imagePreview = null;
+    }
+  }
 
   getAllDepartments() {
     this.departmentService.getAllDepartments().subscribe({
@@ -99,11 +123,32 @@ export class EmployeeEditComponent implements OnInit {
   }
 
   editEmployee() {
+    const formValue = this.employeeEditForm.getRawValue();
+
+    if (formValue.image) {
+      const imageData = new FormData();
+      imageData.append('file', formValue.image);
+
+      this.employeeService.uploadImage(imageData).subscribe({
+        next: (fileName: string) => {
+          this.submitEmployee(formValue, fileName);
+        },
+        error: () => {
+          this.errorMessage = 'Error uploading image. Please try again.';
+        },
+      });
+    } else {
+      this.submitEmployee(formValue, this.employee.image ?? '');
+    }
+  }
+
+  submitEmployee(formValue: any, fileName: string) {
     const payload = {
-      name: this.employeeEditForm.controls['name'].value!,
-      departmentId: this.employeeEditForm.controls['departmentId'].value!,
-      dateOfJoining: this.employeeEditForm.controls['dateOfJoining'].value!,
-      image: this.employeeEditForm.controls['image'].value!,
+      name: formValue.name,
+      departmentId: formValue.departmentId,
+      dateOfJoining:
+        this.datePipe.transform(formValue.dateOfJoining, 'yyyy-MM-dd') ?? '',
+      image: fileName,
     };
 
     this.employeeService.editEmployee(this.employee.id, payload).subscribe({

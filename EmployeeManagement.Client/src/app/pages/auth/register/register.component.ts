@@ -7,14 +7,17 @@ import { RouterModule } from '@angular/router';
 import { MaterialModule } from 'src/app/material.module';
 
 @Component({
-  selector: 'app-side-register',
+  selector: 'app-register',
   imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule],
-  templateUrl: './side-register.component.html',
+  templateUrl: './register.component.html',
 })
-export class AppSideRegisterComponent {
+export class RegisterComponent {
   options = this.settings.getOptions();
 
-  constructor(private settings: CoreService, private router: Router) {}
+  constructor(
+    private settings: CoreService,
+    private router: Router,
+  ) {}
 
   form = new FormGroup({
     uname: new FormControl('', [Validators.required, Validators.minLength(6)]),

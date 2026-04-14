@@ -15,20 +15,18 @@
           </mat-form-field>
 
           @if (
-            (employeeEditForm.controls["name"]?.dirty ||
-              employeeEditForm.controls["name"]?.touched) &&
-            employeeEditForm.controls["name"].invalid
+          (employeeEditForm.controls["name"]?.dirty ||
+          employeeEditForm.controls["name"]?.touched) &&
+          employeeEditForm.controls["name"].invalid
           ) {
-            <div class="m-b-8">
-              @if (employeeEditForm.controls["name"]?.hasError("required")) {
-                <mat-error>Department name is required</mat-error>
-              }
-              @if (employeeEditForm.controls["name"]?.hasError("minlength")) {
-                <mat-error
-                  >Department name must have at least 2 characters</mat-error
-                >
-              }
-            </div>
+          <div class="m-b-8">
+            @if (employeeEditForm.controls["name"]?.hasError("required")) {
+            <mat-error>Department name is required</mat-error>
+            }
+            @if (employeeEditForm.controls["name"]?.hasError("minlength")) {
+            <mat-error>Department name must have at least 2 characters</mat-error>
+            }
+          </div>
           }
         </div>
         <div class="col-lg-6">
@@ -36,25 +34,25 @@
           <mat-form-field appearance="outline" class="w-100">
             <mat-select formControlName="departmentId">
               @for (department of departments; track department.id) {
-                <mat-option [value]="department.id">{{
-                  department.name
+              <mat-option [value]="department.id">{{
+                department.name
                 }}</mat-option>
               }
             </mat-select>
           </mat-form-field>
 
           @if (
-            (employeeEditForm.controls["departmentId"]?.dirty ||
-              employeeEditForm.controls["departmentId"]?.touched) &&
-            employeeEditForm.controls["departmentId"].invalid
+          (employeeEditForm.controls["departmentId"]?.dirty ||
+          employeeEditForm.controls["departmentId"]?.touched) &&
+          employeeEditForm.controls["departmentId"].invalid
           ) {
-            <div class="m-b-8">
-              @if (
-                employeeEditForm.controls["departmentId"]?.hasError("required")
-              ) {
-                <mat-error>Department is required</mat-error>
-              }
-            </div>
+          <div class="m-b-8">
+            @if (
+            employeeEditForm.controls["departmentId"]?.hasError("required")
+            ) {
+            <mat-error>Department is required</mat-error>
+            }
+          </div>
           }
         </div>
       </div>
@@ -62,48 +60,90 @@
         <div class="col-lg-6">
           <mat-label class="f-w-600 m-b-8 d-block">Joining Date</mat-label>
           <mat-form-field appearance="outline" class="w-100">
-            <input
-              matInput
-              formControlName="dateOfJoining"
-              [matDatepicker]="picker"
-            />
-            <mat-datepicker-toggle
-              matIconSuffix
-              [for]="picker"
-            ></mat-datepicker-toggle>
+            <input matInput formControlName="dateOfJoining" [matDatepicker]="picker" />
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
 
           @if (
-            (employeeEditForm.controls["dateOfJoining"]?.dirty ||
-              employeeEditForm.controls["dateOfJoining"]?.touched) &&
-            employeeEditForm.controls["dateOfJoining"].invalid
+          (employeeEditForm.controls["dateOfJoining"]?.dirty ||
+          employeeEditForm.controls["dateOfJoining"]?.touched) &&
+          employeeEditForm.controls["dateOfJoining"].invalid
           ) {
-            <div class="m-b-8">
-              @if (
-                employeeEditForm.controls["dateOfJoining"]?.hasError("required")
-              ) {
-                <mat-error>Joining date is required</mat-error>
-              }
-            </div>
+          <div class="m-b-8">
+            @if (
+            employeeEditForm.controls["dateOfJoining"]?.hasError("required")
+            ) {
+            <mat-error>Joining date is required</mat-error>
+            }
+          </div>
+          }
+        </div>
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Picture</mat-label>
+          <input hidden type="file" accept="image/png, image/jpg" #fileInput (change)="onFileChange($event)" />
+          <div class="w-100 d-flex align-items-center gap-3" style="
+              border: 1px solid rgba(0, 0, 0, 0.1);
+              border-radius: 12px;
+              height: 42px;
+              cursor: pointer;
+            " (click)="fileInput.click()">
+            <button matButton="filled" type="button" style="flex-shrink: 0">
+              Choose Image
+            </button>
+            <span class="f-s-12" style="
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              ">
+              {{ fileName || "No file chosen" }}
+            </span>
+          </div>
+
+          @if (imagePreview || imageUrl) {
+          <div class="m-t-12">
+            <img [src]="imagePreview ?? imageUrl" alt="Image Preview" style="
+                  width: 100%;
+                  max-width: 200px;
+                  object-fit: contain;
+                  border-radius: 12px;
+                  border: 1px solid rgba(0, 0, 0, 0.1);
+                " />
+          </div>
+          }
+
+          @if (
+          (employeeEditForm.controls["image"]?.dirty ||
+          employeeEditForm.controls["image"]?.touched) &&
+          employeeEditForm.controls["image"].invalid
+          ) {
+          <div class="m-b-8 m-t-4">
+            @if (employeeEditForm.controls["image"]?.hasError("required")) {
+            <mat-error>Image is required</mat-error>
+            }
+            @if (
+            employeeEditForm.controls["image"]?.hasError("invalidFileType")
+            ) {
+            <mat-error>Only JPG and PNG files are allowed</mat-error>
+            }
+            @if (
+            employeeEditForm.controls["image"]?.hasError("fileTooLarge")
+            ) {
+            <mat-error>File size must not exceed 2MB</mat-error>
+            }
+          </div>
           }
         </div>
       </div>
 
       @if (errorMessage) {
-        <mat-error>
-          {{ errorMessage }}
-        </mat-error>
+      <mat-error>
+        {{ errorMessage }}
+      </mat-error>
       }
 
       <div class="m-t-12">
-        <button
-          mat-flat-button
-          color="primary"
-          class="m-r-8"
-          type="submit"
-          [disabled]="employeeEditForm.invalid"
-        >
+        <button mat-flat-button color="primary" class="m-r-8" type="submit" [disabled]="employeeEditForm.invalid">
           Submit
         </button>
       </div>
