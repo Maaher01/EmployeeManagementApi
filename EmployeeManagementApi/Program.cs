@@ -1,5 +1,4 @@
 using EmployeeManagementApi.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
@@ -29,7 +28,7 @@ builder.Services.AddDbContext<EmployeeDbContext>(options =>
 //);
 
 builder.Services
-    .AddIdentityApiEndpoints<IdentityUser>()
+    .AddIdentityApiEndpoints<AppUser>()
     .AddEntityFrameworkStores<EmployeeDbContext>();
 
 var app = builder.Build();
@@ -55,5 +54,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app
+    .MapGroup("/api")
+    .MapIdentityApi<AppUser>();
 
 app.Run();
