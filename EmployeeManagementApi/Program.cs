@@ -1,6 +1,10 @@
 using EmployeeManagementApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +16,8 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins("http://localhost:4200")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
+            .AllowAnyHeader()
+            .AllowAnyMethod();
         });
 });
 builder.Services.AddControllers();
@@ -31,14 +35,34 @@ builder.Services
     .AddIdentityApiEndpoints<AppUser>()
     .AddEntityFrameworkStores<EmployeeDbContext>();
 
-var app = builder.Build();
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequiredLength = 7;
+    options.User.RequireUniqueEmail = true;
+});
 
-app.UseCors("AllowedOrigins");
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(y =>
+{
+    y.SaveToken = false;
+    y.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:JwtSecret"]!)
+        ),
+    };
+});
+
+var app = builder.Build();
 
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "Photos")),
+        Path.Combine(Directory.GetCurrentDirectory(), "Photos")
+    ),
     RequestPath = "/Photos"
 });
 
@@ -51,12 +75,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowedOrigins");
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-app
-    .MapGroup("/api")
+app.MapGroup("/api")
     .MapIdentityApi<AppUser>();
 
 app.Run();
