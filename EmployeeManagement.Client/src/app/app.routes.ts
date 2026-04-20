@@ -1,11 +1,13 @@
 import { Routes } from '@angular/router';
 import { AuthComponent } from './layouts/auth/auth.component';
 import { FullComponent } from './layouts/full/full.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
     component: FullComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -36,6 +38,7 @@ export const routes: Routes = [
   {
     path: '',
     component: AuthComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: 'auth',

@@ -16,6 +16,11 @@ export const navItems: NavItem[] = [
     iconName: 'solar:sidebar-minimalistic-line-duotone',
     route: '/department',
   },
+  {
+    displayName: 'Users',
+    iconName: 'solar:users-group-rounded-line-duotone',
+    route: '/user',
+  },
   // {
   //   navCap: 'Ui Components',
   //   divider: true,

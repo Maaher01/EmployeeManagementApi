@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmployeeManagementApi.Controllers
 {
@@ -22,6 +23,7 @@ namespace EmployeeManagementApi.Controllers
             _config = config;
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
@@ -33,15 +35,12 @@ namespace EmployeeManagementApi.Controllers
             };
 
             var result = await _user.CreateAsync(user, dto.Password);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
+            if (!result.Succeeded) return BadRequest(result.Errors);
 
             return Ok("User registered successfully");
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
@@ -66,13 +65,14 @@ namespace EmployeeManagementApi.Controllers
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Email, user.Email!)
+                new Claim("uid", user.Id),
+                new Claim("username", user.UserName!),
+                new Claim("email", user.Email!)
             };
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.UtcNow.AddDays(1),
+                expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
             );
 
