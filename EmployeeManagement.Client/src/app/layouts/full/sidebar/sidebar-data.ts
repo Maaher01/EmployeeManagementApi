@@ -7,6 +7,10 @@ export const navItems: NavItem[] = [
     route: '/dashboard',
   },
   {
+    navCap: 'HR',
+    divider: true,
+  },
+  {
     displayName: 'Employees',
     iconName: 'solar:users-group-two-rounded-line-duotone',
     route: '/employee',
@@ -17,8 +21,17 @@ export const navItems: NavItem[] = [
     route: '/department',
   },
   {
+    navCap: 'ADMINISTRATION',
+    divider: true,
+  },
+  {
     displayName: 'Users',
     iconName: 'solar:users-group-rounded-line-duotone',
+    route: '/user',
+  },
+  {
+    displayName: 'Roles',
+    iconName: 'solar:shield-line-duotone',
     route: '/user',
   },
   // {
