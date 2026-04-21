@@ -12,7 +12,8 @@ namespace EmployeeManagementApi.Extensions
         public static IServiceCollection AddIdentityHandlersAndStores(this IServiceCollection services)
         {
             services.AddIdentityApiEndpoints<AppUser>()
-                .AddEntityFrameworkStores<EmployeeDbContext>();
+                    .AddRoles<IdentityRole>()
+                    .AddEntityFrameworkStores<EmployeeDbContext>();
 
             return services;
         }

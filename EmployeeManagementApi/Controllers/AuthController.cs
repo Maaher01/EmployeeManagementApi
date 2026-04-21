@@ -16,17 +16,28 @@ namespace EmployeeManagementApi.Controllers
     {
         private readonly UserManager<AppUser> _user;
         private readonly IConfiguration _config;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AuthController(UserManager<AppUser> user, IConfiguration config)
+        public AuthController(UserManager<AppUser> user, IConfiguration config, RoleManager<IdentityRole> roleManager)
         {
             _user = user;
             _config = config;
+            _roleManager = roleManager;
         }
 
-        [AllowAnonymous]
         [HttpPost("register")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+
+            if(userRole == "HR" && dto.Role != "Employee") return Forbid();
+
+            if (!await _roleManager.RoleExistsAsync(dto.Role))
+            {
+                return BadRequest($"Role '{dto.Role}' does not exist");
+            }
+
             var user = new AppUser
             {
                 UserName = dto.UserName,
@@ -36,6 +47,8 @@ namespace EmployeeManagementApi.Controllers
 
             var result = await _user.CreateAsync(user, dto.Password);
             if (!result.Succeeded) return BadRequest(result.Errors);
+
+            await _user.AddToRoleAsync(user, dto.Role);
 
             return Ok("User registered successfully");
         }
@@ -50,24 +63,25 @@ namespace EmployeeManagementApi.Controllers
             var passwordValid = await _user.CheckPasswordAsync(user, dto.Password);
             if (!passwordValid) return Unauthorized("Invalid email or password");
 
-            var token = GenerateJwtToken(user);
+            var token = await GenerateJwtToken(user);
 
             return Ok(new AuthResponseDto
             {
                 Token = token,
-                Email = user.Email!
             });
         }
 
-        private string GenerateJwtToken(AppUser user)
+        private async Task<string> GenerateJwtToken(AppUser user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["AppSettings:JwtSecret"]!));
 
+            var roles = await _user.GetRolesAsync(user);
             var claims = new[]
             {
                 new Claim("uid", user.Id),
                 new Claim("username", user.UserName!),
-                new Claim("email", user.Email!)
+                new Claim("email", user.Email!),
+                new Claim("role", roles.First())
             };
 
             var token = new JwtSecurityToken(
