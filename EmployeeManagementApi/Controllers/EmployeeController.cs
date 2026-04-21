@@ -1,7 +1,8 @@
-﻿using EmployeeManagementApi.Models;
+﻿using EmployeeManagementApi.Dtos.Employee;
+using EmployeeManagementApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using EmployeeManagementApi.Dtos.Employee;
 
 namespace EmployeeManagementApi.Controllers
 {
@@ -19,6 +20,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> GetEmployees() 
         { 
             var employees = await _context.Employees
@@ -36,9 +38,12 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> GetEmployeeById(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _context.Employees
+                .Include(e => e.Department)
+                .FirstOrDefaultAsync(e =>  e.Id == id);
 
             if (employee == null) return NotFound();
 
@@ -47,7 +52,7 @@ namespace EmployeeManagementApi.Controllers
                 Id = employee.Id,
                 Name = employee.Name,
                 DepartmentId = employee.DepartmentId,
-                DepartmentName = (await _context.Departments.FindAsync(employee.DepartmentId))?.Name,
+                DepartmentName = employee.Department?.Name,
                 DateOfJoining = employee.DateOfJoining,
                 Image = employee.Image
             };
@@ -56,6 +61,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> AddEmployee([FromBody] EmployeeCreateUpdateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -88,6 +94,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> UpdateEmployee(int id, [FromBody] EmployeeCreateUpdateDto dto)
         {
             if(!ModelState.IsValid) return BadRequest(ModelState);
@@ -116,6 +123,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
             var employee = await _context.Employees.FindAsync(id);
@@ -133,6 +141,7 @@ namespace EmployeeManagementApi.Controllers
 
         [Route("UploadImage")]
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> UploadImage()
         {
             try

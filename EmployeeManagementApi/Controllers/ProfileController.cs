@@ -1,6 +1,8 @@
 ﻿using EmployeeManagementApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace EmployeeManagementApi.Controllers
 {
@@ -15,12 +17,15 @@ namespace EmployeeManagementApi.Controllers
             _context = context;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetUserProfile()
         {
+            var userId = User.FindFirstValue("uid");
             var user = await _context.Users
                 .Include(u => u.Employee)
-                .FirstOrDefaultAsync();
+                .ThenInclude(e => e.Department)
+                .FirstOrDefaultAsync(u => u.Id == userId);
 
             if(user == null) return NotFound();
 

@@ -1,5 +1,6 @@
 ﻿using EmployeeManagementApi.Dtos.Department;
 using EmployeeManagementApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles ="Admin, HR")]
         public async Task<IActionResult> GetDepartments() 
         {
             var departments = await _context.Departments
@@ -30,6 +32,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> GetDepartmentById(int id)
         {
             var department = await _context.Departments.FindAsync(id);
@@ -46,6 +49,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> AddDepartment([FromBody] DepartmentCreateUpdateDto dto) 
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -75,6 +79,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> UpdateDepartment(int id, [FromBody] DepartmentCreateUpdateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -96,6 +101,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
             var department = await _context.Departments.FindAsync(id);
