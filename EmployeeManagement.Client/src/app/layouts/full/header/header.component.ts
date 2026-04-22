@@ -11,19 +11,12 @@ import { MaterialModule } from 'src/app/material.module';
 import { RouterModule } from '@angular/router';
 
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import { MatBadgeModule } from '@angular/material/badge';
 import { AuthService } from 'src/app/services/auth.service';
 import { User } from 'src/app/models/user.interface';
 
 @Component({
   selector: 'app-header',
-  imports: [
-    RouterModule,
-    NgScrollbarModule,
-    TablerIconsModule,
-    MaterialModule,
-    MatBadgeModule,
-  ],
+  imports: [RouterModule, NgScrollbarModule, TablerIconsModule, MaterialModule],
   templateUrl: './header.component.html',
   encapsulation: ViewEncapsulation.None,
 })

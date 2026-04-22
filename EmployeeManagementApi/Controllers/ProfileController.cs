@@ -8,6 +8,7 @@ namespace EmployeeManagementApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProfileController : ControllerBase
     {
         private readonly EmployeeDbContext _context;
@@ -17,7 +18,6 @@ namespace EmployeeManagementApi.Controllers
             _context = context;
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetUserProfile()
         {
@@ -35,7 +35,7 @@ namespace EmployeeManagementApi.Controllers
                 email = user.Email,
                 employeeId = user.EmployeeId,
                 name = user.Employee?.Name,
-                department = user.Employee?.Department.Name,
+                department = user.Employee?.Department?.Name,
                 dateOfJoining = user.Employee?.DateOfJoining,
                 image = user.Employee?.Image
             };

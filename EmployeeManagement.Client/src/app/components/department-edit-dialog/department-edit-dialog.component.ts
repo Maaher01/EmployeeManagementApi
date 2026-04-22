@@ -7,23 +7,11 @@ import {
 } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DepartmentService } from 'src/app/services/department.service';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
+import { MaterialModule } from 'src/app/material.module';
 
 @Component({
   selector: 'app-department-edit-dialog',
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatCardModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, MaterialModule],
   templateUrl: './department-edit-dialog.component.html',
 })
 export class DepartmentEditDialogComponent implements OnInit {

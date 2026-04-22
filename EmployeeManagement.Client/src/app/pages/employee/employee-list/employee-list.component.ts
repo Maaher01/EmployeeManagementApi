@@ -1,11 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
 import { MaterialModule } from 'src/app/material.module';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
 import { Employee } from 'src/app/models/employee.interface';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,16 +10,7 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-employee-list',
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatCardModule,
-    MaterialModule,
-    MatIconModule,
-    MatMenuModule,
-    MatButtonModule,
-    RouterModule,
-  ],
+  imports: [CommonModule, MaterialModule, RouterModule],
   templateUrl: './employee-list.component.html',
 })
 export class EmployeeListComponent implements OnInit {

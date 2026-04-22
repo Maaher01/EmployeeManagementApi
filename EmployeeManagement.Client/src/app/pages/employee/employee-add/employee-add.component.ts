@@ -6,10 +6,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { Router } from '@angular/router';
 import { Department } from 'src/app/models/department.interface';
@@ -18,27 +14,13 @@ import {
   fileSizeValidator,
   fileTypeValidator,
 } from 'src/app/shared/validators/file.validators';
-import { MatOption, MatSelect } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { EmployeeAdd } from 'src/app/models/employee-add.interface';
 import { MaterialModule } from 'src/app/material.module';
 
 @Component({
   selector: 'app-employee-add',
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatCardModule,
-    MatInputModule,
-    MatSelect,
-    MatOption,
-    MatDatepickerModule,
-    MaterialModule,
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MaterialModule],
   providers: [provideNativeDateAdapter(), DatePipe],
   templateUrl: './employee-add.component.html',
 })

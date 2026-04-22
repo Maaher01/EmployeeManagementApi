@@ -2,14 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { Employee } from 'src/app/models/employee.interface';
-import { MatCardModule } from '@angular/material/card';
-import { MatError } from '@angular/material/form-field';
 import { DatePipe } from '@angular/common';
 import { CommonModule } from '@angular/common';
+import { MaterialModule } from 'src/app/material.module';
 
 @Component({
   selector: 'app-employee-details',
-  imports: [CommonModule, MatCardModule, MatError],
+  imports: [CommonModule, MaterialModule],
   providers: [DatePipe],
   templateUrl: './employee-details.component.html',
 })
