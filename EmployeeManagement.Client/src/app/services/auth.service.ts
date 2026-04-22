@@ -3,8 +3,6 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
-import { jwtDecode } from 'jwt-decode';
-import { User } from '../models/user.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -26,11 +24,5 @@ export class AuthService {
 
   isLoggedIn() {
     return localStorage.getItem('token') != null;
-  }
-
-  getUserInfo(): User | null {
-    const token = localStorage.getItem('token');
-    if (!token) return null;
-    return jwtDecode(token);
   }
 }

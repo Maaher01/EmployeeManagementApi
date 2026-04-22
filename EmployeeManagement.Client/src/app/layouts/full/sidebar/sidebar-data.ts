@@ -32,7 +32,7 @@ export const navItems: NavItem[] = [
   {
     displayName: 'Roles',
     iconName: 'solar:shield-line-duotone',
-    route: '/user',
+    route: '/roles',
   },
   // {
   //   navCap: 'Ui Components',

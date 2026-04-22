@@ -27,6 +27,11 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'user',
+        loadChildren: () =>
+          import('./pages/user/user.routes').then((m) => m.UserRoutes),
+      },
+      {
         path: 'department',
         loadChildren: () =>
           import('./pages/department/department.routes').then(

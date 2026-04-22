@@ -4,7 +4,6 @@ import {
   EventEmitter,
   Input,
   ViewEncapsulation,
-  OnInit,
 } from '@angular/core';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
@@ -12,7 +11,6 @@ import { RouterModule } from '@angular/router';
 
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { AuthService } from 'src/app/services/auth.service';
-import { User } from 'src/app/models/user.interface';
 
 @Component({
   selector: 'app-header',
@@ -20,23 +18,14 @@ import { User } from 'src/app/models/user.interface';
   templateUrl: './header.component.html',
   encapsulation: ViewEncapsulation.None,
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
   @Input() showToggle = true;
   @Input() toggleChecked = false;
   @Output() toggleMobileNav = new EventEmitter<void>();
-  user: User | null = null;
 
   constructor(public authService: AuthService) {}
 
-  ngOnInit(): void {
-    this.getUserInfo();
-  }
-
   logout() {
     this.authService.logout();
-  }
-
-  getUserInfo() {
-    this.user = this.authService.getUserInfo();
   }
 }
