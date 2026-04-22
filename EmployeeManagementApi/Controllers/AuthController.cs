@@ -16,41 +16,11 @@ namespace EmployeeManagementApi.Controllers
     {
         private readonly UserManager<AppUser> _user;
         private readonly IConfiguration _config;
-        private readonly RoleManager<IdentityRole> _roleManager;
 
         public AuthController(UserManager<AppUser> user, IConfiguration config, RoleManager<IdentityRole> roleManager)
         {
             _user = user;
             _config = config;
-            _roleManager = roleManager;
-        }
-
-        [HttpPost("register")]
-        [Authorize(Roles = "Admin, HR")]
-        public async Task<IActionResult> Register(RegisterDto dto)
-        {
-            var userRole = User.FindFirstValue(ClaimTypes.Role);
-
-            if(userRole == "HR" && dto.Role != "Employee") return Forbid();
-
-            if (!await _roleManager.RoleExistsAsync(dto.Role))
-            {
-                return BadRequest($"Role '{dto.Role}' does not exist");
-            }
-
-            var user = new AppUser
-            {
-                UserName = dto.UserName,
-                Email = dto.Email,
-                EmployeeId = dto.EmployeeId
-            };
-
-            var result = await _user.CreateAsync(user, dto.Password);
-            if (!result.Succeeded) return BadRequest(result.Errors);
-
-            await _user.AddToRoleAsync(user, dto.Role);
-
-            return Ok("User registered successfully");
         }
 
         [AllowAnonymous]

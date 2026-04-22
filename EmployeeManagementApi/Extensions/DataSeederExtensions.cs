@@ -35,7 +35,7 @@ namespace EmployeeManagementApi.Extensions
                 var adminUser = await userManager.FindByEmailAsync("admin@example.com");
                 if (adminUser == null)
                 {
-                    var newAdmin = new AppUser { UserName = "admin@example.com", Email = "admin@example.com", EmployeeId = null };
+                    var newAdmin = new AppUser { UserName = "Admin", Email = "admin@example.com", EmployeeId = null };
                     await userManager.CreateAsync(newAdmin, "Abc@123");
                     await userManager.AddToRoleAsync(newAdmin, "Admin");
                 }
