@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AuthComponent } from './layouts/auth/auth.component';
 import { FullComponent } from './layouts/full/full.component';
 import { authGuard } from './guards/auth.guard';
+import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -25,11 +26,13 @@ export const routes: Routes = [
           import('./pages/employee/employee.routes').then(
             (m) => m.EmployeeRoutes,
           ),
+        canActivate: [roleGuard(['Admin', 'HR'])],
       },
       {
         path: 'user',
         loadChildren: () =>
           import('./pages/user/user.routes').then((m) => m.UserRoutes),
+        canActivate: [roleGuard(['Admin', 'HR'])],
       },
       {
         path: 'department',
@@ -37,6 +40,7 @@ export const routes: Routes = [
           import('./pages/department/department.routes').then(
             (m) => m.DepartmentRoutes,
           ),
+        canActivate: [roleGuard(['Admin', 'HR'])],
       },
     ],
   },

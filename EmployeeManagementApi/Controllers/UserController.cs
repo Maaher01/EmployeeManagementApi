@@ -49,8 +49,11 @@ namespace EmployeeManagementApi.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var employeeExists = await _context.Employees.AnyAsync(e => e.Id == dto.EmployeeId);
-            if (!employeeExists) return BadRequest("Employee ID is invalid");
+            if (dto.EmployeeId.HasValue)
+            {
+                var employeeExists = await _context.Employees.AnyAsync(e => e.Id == dto.EmployeeId.Value);
+                if (!employeeExists) return BadRequest("Employee ID is invalid");
+            }
 
             var callerRole = User.FindFirstValue(ClaimTypes.Role);
 

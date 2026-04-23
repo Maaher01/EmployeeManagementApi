@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from 'src/app/material.module';
 import { Employee } from 'src/app/models/employee.interface';
 import { EmployeeService } from 'src/app/services/employee.service';
+import { UserAdd } from 'src/app/models/user-add.interface';
 
 @Component({
   selector: 'app-user-add',
@@ -69,7 +70,13 @@ export class UserAddComponent implements OnInit {
   }
 
   addUser() {
-    this.userService.addUser(this.userAddForm.getRawValue()).subscribe({
+    const rawEmployeeId = this.userAddForm.value.employeeId;
+    const formValue = {
+      ...this.userAddForm.value,
+      employeeId: rawEmployeeId ? Number(rawEmployeeId) : null,
+    } as UserAdd;
+
+    this.userService.addUser(formValue).subscribe({
       next: (res) => {
         this.responseData = res;
         this.userAddForm.reset();
@@ -83,7 +90,11 @@ export class UserAddComponent implements OnInit {
             'Error creating department. Please try again later.';
         } else if (err.status === 400) {
           // Bad request / model validation
-          this.errorMessage = err.error;
+          if (Array.isArray(err.error)) {
+            this.errorMessage = err.error
+              .map((e: any) => e.description)
+              .join(', ');
+          }
         }
       },
     });

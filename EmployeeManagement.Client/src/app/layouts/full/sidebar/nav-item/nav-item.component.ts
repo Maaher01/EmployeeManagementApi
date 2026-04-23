@@ -6,7 +6,7 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { NavItem } from './nav-item';
+import { NavItem } from '../../../../models/nav-item.interface';
 import { Router } from '@angular/router';
 import { NavService } from '../../../../services/nav.service';
 
@@ -31,7 +31,10 @@ export class AppNavItemComponent implements OnChanges {
   @HostBinding('attr.aria-expanded') ariaExpanded = this.expanded;
   @Input() depth: any;
 
-  constructor(public navService: NavService, public router: Router) {}
+  constructor(
+    public navService: NavService,
+    public router: Router,
+  ) {}
 
   ngOnChanges() {
     const url = this.navService.currentUrl();

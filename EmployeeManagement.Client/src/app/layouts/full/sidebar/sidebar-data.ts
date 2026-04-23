@@ -1,4 +1,4 @@
-import { NavItem } from './nav-item/nav-item';
+import { NavItem } from '../../../models/nav-item.interface';
 
 export const navItems: NavItem[] = [
   {
@@ -9,68 +9,29 @@ export const navItems: NavItem[] = [
   {
     navCap: 'HR',
     divider: true,
+    roles: ['Admin', 'HR'],
   },
   {
     displayName: 'Employees',
     iconName: 'solar:users-group-two-rounded-line-duotone',
     route: '/employee',
+    roles: ['Admin', 'HR'],
   },
   {
     displayName: 'Departments',
     iconName: 'solar:sidebar-minimalistic-line-duotone',
     route: '/department',
+    roles: ['Admin', 'HR'],
   },
   {
     navCap: 'ADMINISTRATION',
     divider: true,
+    roles: ['Admin', 'HR'],
   },
   {
     displayName: 'Users',
     iconName: 'solar:users-group-rounded-line-duotone',
     route: '/user',
+    roles: ['Admin', 'HR'],
   },
-  {
-    displayName: 'Roles',
-    iconName: 'solar:shield-line-duotone',
-    route: '/roles',
-  },
-  // {
-  //   navCap: 'Ui Components',
-  //   divider: true,
-  // },
-  // {
-  //   displayName: 'Forms',
-  //   iconName: 'solar:file-text-line-duotone',
-  //   route: '/ui-components/forms',
-  // },
-  // {
-  //   divider: true,
-  //   navCap: 'Auth',
-  // },
-  // {
-  //   displayName: 'Login',
-  //   iconName: 'solar:lock-keyhole-minimalistic-line-duotone',
-  //   route: '/auth',
-  //   children: [
-  //     {
-  //       displayName: 'Login',
-  //       subItemIcon: true,
-  //       iconName: 'solar:round-alt-arrow-right-line-duotone',
-  //       route: '/auth/login',
-  //     },
-  //   ],
-  // },
-  // {
-  //   displayName: 'Register',
-  //   iconName: 'solar:user-plus-rounded-line-duotone',
-  //   route: '/auth',
-  //   children: [
-  //     {
-  //       displayName: 'Register',
-  //       subItemIcon: true,
-  //       iconName: 'solar:round-alt-arrow-right-line-duotone',
-  //       route: '/auth/register',
-  //     },
-  //   ],
-  // },
 ];

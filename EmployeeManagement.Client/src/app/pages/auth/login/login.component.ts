@@ -23,7 +23,7 @@ export class LoginComponent {
   ) {}
 
   loginForm = this.fb.nonNullable.group({
-    email: new FormControl('', [Validators.required, Validators.email]),
+    email: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),
   });
 

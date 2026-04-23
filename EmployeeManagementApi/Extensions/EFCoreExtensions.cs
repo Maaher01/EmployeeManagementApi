@@ -7,12 +7,12 @@ namespace EmployeeManagementApi.Extensions
     {
         public static IServiceCollection InjectDbContext(this IServiceCollection services, IConfiguration config)
         {
-            services.AddDbContext<EmployeeDbContext>(options =>
-                options.UseSqlServer(config.GetConnectionString("EmployeeAppCon"))
-            );
             //services.AddDbContext<EmployeeDbContext>(options =>
-            //    options.UseInMemoryDatabase("TestDb")
+            //    options.UseSqlServer(config.GetConnectionString("EmployeeAppCon"))
             //);
+            services.AddDbContext<EmployeeDbContext>(options =>
+                options.UseInMemoryDatabase("TestDb")
+            );
 
             return services;
         }
