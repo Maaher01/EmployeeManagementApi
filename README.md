@@ -108,8 +108,3 @@ Attempting to access a restricted route directly will redirect you to the `/unau
 
 This project is currently in development. Suggestions and feedback are welcome.
 
----
-
-## License
-
-This project is licensed under the MIT License.
