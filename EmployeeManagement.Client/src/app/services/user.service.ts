@@ -20,4 +20,8 @@ export class UserService {
   getAllUsers(): Observable<User[]> {
     return this._httpClient.get<User[]>(this.apiUrl);
   }
+
+  deleteUser(id: number) {
+    return this._httpClient.delete(this.apiUrl + `${id}`);
+  }
 }

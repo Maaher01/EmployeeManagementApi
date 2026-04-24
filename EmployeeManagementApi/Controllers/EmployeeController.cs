@@ -23,7 +23,7 @@ namespace EmployeeManagementApi.Controllers
         [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> GetEmployees() 
         { 
-            var employees = await _context.Employees
+            var employees = await _context.Employees.OrderBy(e => e.DateOfJoining)
                 .Select(e => new EmployeeGetDto
                 {
                     Id = e.Id,

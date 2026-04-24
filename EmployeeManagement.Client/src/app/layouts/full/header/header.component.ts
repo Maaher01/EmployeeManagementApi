@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Input,
   ViewEncapsulation,
+  OnInit,
 } from '@angular/core';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
@@ -11,6 +12,7 @@ import { RouterModule } from '@angular/router';
 
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { AuthService } from 'src/app/services/auth.service';
+import { DecodedToken } from 'src/app/models/decoded-token.interface';
 
 @Component({
   selector: 'app-header',
@@ -18,12 +20,22 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './header.component.html',
   encapsulation: ViewEncapsulation.None,
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   @Input() showToggle = true;
   @Input() toggleChecked = false;
   @Output() toggleMobileNav = new EventEmitter<void>();
+  loggedInUser: DecodedToken | null = null;
 
   constructor(public authService: AuthService) {}
+
+  ngOnInit(): void {
+    this.getUserInfo();
+  }
+
+  getUserInfo() {
+    this.loggedInUser = this.authService.getUserInfo();
+    console.log(this.loggedInUser);
+  }
 
   logout() {
     this.authService.logout();

@@ -42,6 +42,11 @@ export const routes: Routes = [
           ),
         canActivate: [roleGuard(['Admin', 'HR'])],
       },
+      {
+        path: 'profile',
+        loadChildren: () =>
+          import('./pages/profile/profile.routes').then((m) => m.ProfileRoutes),
+      },
     ],
   },
   {

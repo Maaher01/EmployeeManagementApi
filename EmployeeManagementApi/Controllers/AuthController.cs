@@ -1,12 +1,13 @@
 ﻿using EmployeeManagementApi.Dtos.Auth;
 using EmployeeManagementApi.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace EmployeeManagementApi.Controllers
 {
@@ -15,11 +16,13 @@ namespace EmployeeManagementApi.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<AppUser> _user;
+        private readonly EmployeeDbContext _context;
         private readonly IConfiguration _config;
 
-        public AuthController(UserManager<AppUser> user, IConfiguration config, RoleManager<IdentityRole> roleManager)
+        public AuthController(UserManager<AppUser> user, EmployeeDbContext context, IConfiguration config, RoleManager<IdentityRole> roleManager)
         {
             _user = user;
+            _context = context;
             _config = config;
         }
 
@@ -43,16 +46,29 @@ namespace EmployeeManagementApi.Controllers
 
         private async Task<string> GenerateJwtToken(AppUser user)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["AppSettings:JwtSecret"]!));
+            await _context.Users
+                .Include(u => u.Employee)
+                .ThenInclude(e => e.Department)
+                .Where(u => u.Id == user.Id)
+                .LoadAsync();
 
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["AppSettings:JwtSecret"]!));
             var roles = await _user.GetRolesAsync(user);
-            var claims = new[]
+
+            var claims = new List<Claim>
             {
                 new Claim("uid", user.Id),
-                new Claim("username", user.UserName!),
                 new Claim("email", user.Email!),
                 new Claim("role", roles.First())
             };
+
+            if(user.Employee != null)
+            {
+                claims.Add(new Claim("name", user.Employee.Name));
+                claims.Add(new Claim("image", user.Employee.Image!));
+                claims.Add(new Claim("department", user.Employee.Department.Name));
+                claims.Add(new Claim("dateOfJoining", user.Employee.DateOfJoining.ToString("yyyy-MM-dd")));
+            }
 
             var token = new JwtSecurityToken(
                 claims: claims,

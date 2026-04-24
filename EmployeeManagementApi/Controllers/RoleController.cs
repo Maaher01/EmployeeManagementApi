@@ -20,14 +20,21 @@ namespace EmployeeManagementApi.Controllers
         public IActionResult GetRoles()
         {
             var callerRole = User.FindFirstValue(ClaimTypes.Role);
-
             var roles = _roleManager.Roles
-                .Select(r => new RoleGetDto 
-                { 
-                    Name = r.Name 
+                .Select(r => new RoleGetDto
+                {
+                    Name = r.Name
                 }).ToList();
 
-            if(callerRole == "HR") roles = roles.Where(r => r.Name == "Employee").ToList();
+
+            if (callerRole == "Admin")
+            {
+                roles = roles.Where(r => r.Name == "Employee" || r.Name == "HR").ToList();
+            } 
+            else if (callerRole == "HR")
+            {
+                roles = roles.Where(r => r.Name == "Employee").ToList();
+            }
 
             return Ok(roles);
         }

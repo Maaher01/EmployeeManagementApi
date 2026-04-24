@@ -25,7 +25,7 @@ namespace EmployeeManagementApi.Controllers
         [Authorize(Roles ="Admin, HR")]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _userManager.Users.ToListAsync();
+            var users = await _userManager.Users.OrderBy(u => u.CreatedAt).ToListAsync();
             var result = new List<UserGetDto>();
 
             foreach(var user in users)
@@ -57,6 +57,7 @@ namespace EmployeeManagementApi.Controllers
 
             var callerRole = User.FindFirstValue(ClaimTypes.Role);
 
+            if (callerRole == "Admin" && dto.Role == "Admin") return Forbid();
             if (callerRole == "HR" && dto.Role != "Employee") return Forbid();
 
             var user = new AppUser
@@ -80,6 +81,20 @@ namespace EmployeeManagementApi.Controllers
             };
 
             return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null) return NotFound();
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
