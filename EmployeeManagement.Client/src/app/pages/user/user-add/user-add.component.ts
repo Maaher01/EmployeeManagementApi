@@ -14,6 +14,8 @@ import { MaterialModule } from 'src/app/material.module';
 import { Employee } from 'src/app/models/employee.interface';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { UserAdd } from 'src/app/models/user-add.interface';
+import { AuthService } from 'src/app/services/auth.service';
+import { DecodedToken } from 'src/app/models/decoded-token.interface';
 
 @Component({
   selector: 'app-user-add',
@@ -25,9 +27,9 @@ export class UserAddComponent implements OnInit {
   errorMessage: any;
   roles: Role[];
   employees: Employee[];
+  currentUser: DecodedToken | null = null;
 
   userAddForm = this.fb.nonNullable.group({
-    username: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
     role: ['', [Validators.required]],
@@ -37,11 +39,20 @@ export class UserAddComponent implements OnInit {
   ngOnInit(): void {
     this.getAllRoles();
     this.getAllEmployees();
+
+    this.authService.$currentUser.subscribe(
+      (user) => (this.currentUser = user),
+    );
+
+    if (this.currentUser?.role === 'HR') {
+      this.userAddForm.patchValue({ role: 'Employee' });
+    }
   }
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private authService: AuthService,
     private userService: UserService,
     private employeeService: EmployeeService,
     private roleService: RoleService,

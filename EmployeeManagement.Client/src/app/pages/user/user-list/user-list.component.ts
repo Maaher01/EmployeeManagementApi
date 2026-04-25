@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
+import { UserEditDialogComponent } from 'src/app/components/user-edit-dialog/user-edit-dialog.component';
 import { WarningDialogComponent } from 'src/app/components/warning-dialog/warning-dialog.component';
 import { MaterialModule } from 'src/app/material.module';
 import { DecodedToken } from 'src/app/models/decoded-token.interface';
@@ -17,9 +18,9 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class UserListComponent implements OnInit {
   users: User[];
-  loggedInUser: DecodedToken | null = null;
+  currentUser: DecodedToken | null = null;
   errorResponse: any;
-  displayedColumns: string[] = ['username', 'email', 'role', 'action'];
+  displayedColumns: string[] = ['email', 'role', 'action'];
   dataSource: any;
 
   constructor(
@@ -30,7 +31,9 @@ export class UserListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllUsers();
-    this.getUserInfo();
+    this.authService.$currentUser.subscribe(
+      (user) => (this.currentUser = user),
+    );
   }
 
   getAllUsers() {
@@ -45,8 +48,18 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  getUserInfo() {
-    this.loggedInUser = this.authService.getUserInfo();
+  editUser(user: User) {
+    const dialogConf = new MatDialogConfig();
+
+    dialogConf.disableClose = true;
+    dialogConf.autoFocus = true;
+    dialogConf.width = '500px';
+    dialogConf.data = {
+      heading: 'Edit User',
+      user: user,
+    };
+
+    this.dialog.open(UserEditDialogComponent, dialogConf);
   }
 
   deleteUser(id: number) {

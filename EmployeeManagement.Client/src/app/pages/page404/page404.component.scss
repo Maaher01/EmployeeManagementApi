@@ -1,0 +1,17 @@
+.not-found-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 70vh;
+}
+
+.error-code {
+  font-size: 130px;
+  font-weight: 500;
+  color: var(--mat-divider-color);
+  line-height: 1;
+  margin: 0 0 16px;
+  letter-spacing: -4px;
+}

@@ -1,49 +1,77 @@
 <mat-card class="cardWithShadow theme-card">
-    <mat-card-header>
-        <mat-card-title class="m-b-0">Basic Information</mat-card-title>
-        <span class="spacer"></span>
-        <button mat-flat-button color="primary">
-            <mat-icon>edit</mat-icon> Edit
-        </button>
-    </mat-card-header>
+  <mat-card-header>
+    <mat-card-title class="m-b-0">Basic Information</mat-card-title>
+    <span class="spacer"></span>
+    <!-- <button mat-flat-button color="primary">
+      <mat-icon>edit</mat-icon> Edit
+    </button> -->
+  </mat-card-header>
 
-    <mat-card-content class="b-t-1 p-t-16">
-        @if (loggedInUser) {
-        <div class="profile-layout">
-            <!-- Image Section -->
-            <div class="image-section">
-                <div class="image-wrapper">
-                    <img [src]="loggedInUser.image ? 'https://localhost:7063/Photos/' + loggedInUser.image
-                    : 'assets/images/avatars/default.png'" alt="Profile Image" class="profile-img">
-                </div>
-            </div>
+  <mat-card-content class="b-t-1 p-t-16">
+    @if (currentUser) {
+      <div class="profile-layout">
+        <!-- Image Section -->
+        <div class="image-section">
+          <div class="image-wrapper">
+            <img
+              [src]="
+                currentUser.image
+                  ? 'https://localhost:7063/Photos/' + currentUser.image
+                  : 'assets/images/avatars/default.png'
+              "
+              alt="Profile Image"
+              class="profile-img"
+            />
 
-            <!-- Details Section -->
-            <div class="details-section">
-                <table class="info-table w-100">
-                    <tbody>
-                        <tr>
-                            <td class="label f-w-600">Full Name</td>
-                            <td class="value">{{ loggedInUser.name ?? 'N/A' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label f-w-600">Email</td>
-                            <td class="value"><a href="mailto:{{loggedInUser.email}}">{{ loggedInUser.email }}</a></td>
-                        </tr>
-                        <tr>
-                            <td class="label f-w-600">Department</td>
-                            <td class="value">{{ loggedInUser.department ?? 'N/A' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label f-w-600">Date of Joining</td>
-                            <td class="value">{{ (loggedInUser.dateOfJoining | date: 'd MMM, yyyy') ?? 'N/A' }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            @if (currentUser.role != "Admin") {
+              <div class="image-overlay" (click)="fileInput.click()">
+                <mat-icon>edit</mat-icon>
+              </div>
+              <input
+                type="file"
+                #fileInput
+                accept="image/*"
+                style="display: none"
+                (change)="onFileChange($event)"
+              />
+            }
+          </div>
         </div>
-        } @else {
-        <p class="text-muted">No profile information available.</p>
-        }
-    </mat-card-content>
+
+        <!-- Details Section -->
+        <div class="details-section">
+          <table class="info-table w-100">
+            <tbody>
+              <tr>
+                <td class="label f-w-600">Full Name</td>
+                <td class="value">{{ currentUser.name ?? "N/A" }}</td>
+              </tr>
+              <tr>
+                <td class="label f-w-600">Email</td>
+                <td class="value">
+                  <a href="mailto:{{ currentUser.email }}">{{
+                    currentUser.email
+                  }}</a>
+                </td>
+              </tr>
+              <tr>
+                <td class="label f-w-600">Department</td>
+                <td class="value">{{ currentUser.department ?? "N/A" }}</td>
+              </tr>
+              <tr>
+                <td class="label f-w-600">Date of Joining</td>
+                <td class="value">
+                  {{
+                    (currentUser.dateOfJoining | date: "d MMM, yyyy") ?? "N/A"
+                  }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    } @else {
+      <p class="text-muted">No profile information available.</p>
+    }
+  </mat-card-content>
 </mat-card>

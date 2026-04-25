@@ -3,6 +3,9 @@ import { AuthComponent } from './layouts/auth/auth.component';
 import { FullComponent } from './layouts/full/full.component';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { Page404Component } from './pages/page404/page404.component';
+import { Page403Component } from './pages/page403/page403.component';
 
 export const routes: Routes = [
   {
@@ -17,8 +20,7 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
-        loadChildren: () =>
-          import('./pages/pages.routes').then((m) => m.PagesRoutes),
+        component: DashboardComponent,
       },
       {
         path: 'employee',
@@ -60,5 +62,13 @@ export const routes: Routes = [
           import('./pages/auth/auth.routes').then((m) => m.AuthRoutes),
       },
     ],
+  },
+  {
+    path: 'unauthorized',
+    component: Page403Component,
+  },
+  {
+    path: '**',
+    component: Page404Component,
   },
 ];

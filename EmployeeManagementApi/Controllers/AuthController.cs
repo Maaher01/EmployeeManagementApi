@@ -65,6 +65,7 @@ namespace EmployeeManagementApi.Controllers
             if(user.Employee != null)
             {
                 claims.Add(new Claim("name", user.Employee.Name));
+                claims.Add(new Claim("employeeId", user.Employee.Id.ToString()));
                 claims.Add(new Claim("image", user.Employee.Image!));
                 claims.Add(new Claim("department", user.Employee.Department.Name));
                 claims.Add(new Claim("dateOfJoining", user.Employee.DateOfJoining.ToString("yyyy-MM-dd")));
@@ -77,6 +78,18 @@ namespace EmployeeManagementApi.Controllers
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        [HttpPost("refresh-token")]
+        [Authorize]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var userId = User.FindFirstValue("uid");
+            var user = await _user.FindByIdAsync(userId!);
+            if (user == null) return NotFound();
+
+            var token = await GenerateJwtToken(user);
+            return Ok(new { token });
         }
     }
 }

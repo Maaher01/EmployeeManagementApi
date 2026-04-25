@@ -34,7 +34,6 @@ namespace EmployeeManagementApi.Controllers
                 result.Add(new UserGetDto
                 {
                     Id = user.Id,
-                    UserName = user.UserName!,
                     Email = user.Email!,
                     Role = roles.FirstOrDefault()!
                 });
@@ -62,7 +61,7 @@ namespace EmployeeManagementApi.Controllers
 
             var user = new AppUser
             {
-                UserName = dto.UserName,
+                UserName = dto.Email,
                 Email = dto.Email,
                 EmployeeId = dto.EmployeeId,
             };
@@ -75,7 +74,6 @@ namespace EmployeeManagementApi.Controllers
             var result = new UserGetDto
             {
                 Id = user?.Id,
-                UserName = user?.UserName,
                 Email = user?.Email,
                 Role = dto?.Role,
             };
@@ -83,8 +81,34 @@ namespace EmployeeManagementApi.Controllers
             return Ok(result);
         }
 
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, HR")]
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] UserUpdateDto dto)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+
+            if(!string.IsNullOrEmpty(dto.Email)) user.Email = dto.Email;
+
+            if(!string.IsNullOrEmpty(dto.NewPassword) && dto.Role == "Admin")
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                await _userManager.ResetPasswordAsync(user, token, dto.NewPassword);
+            }
+
+            if(!string.IsNullOrEmpty(dto.Role) &&  dto.Role == "Admin")
+            {
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                await _userManager.AddToRoleAsync(user, dto.Role);
+            }
+
+            await _userManager.UpdateAsync(user);
+            return Ok();
+        }
+
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await _context.Users.FindAsync(id);

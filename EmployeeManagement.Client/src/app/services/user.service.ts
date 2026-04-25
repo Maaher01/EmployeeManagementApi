@@ -21,6 +21,10 @@ export class UserService {
     return this._httpClient.get<User[]>(this.apiUrl);
   }
 
+  editUser(id: number, editPayload: any) {
+    return this._httpClient.put(this.apiUrl + `${id}`, editPayload);
+  }
+
   deleteUser(id: number) {
     return this._httpClient.delete(this.apiUrl + `${id}`);
   }

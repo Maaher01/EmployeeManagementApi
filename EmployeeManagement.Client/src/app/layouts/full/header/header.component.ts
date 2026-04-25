@@ -24,17 +24,14 @@ export class HeaderComponent implements OnInit {
   @Input() showToggle = true;
   @Input() toggleChecked = false;
   @Output() toggleMobileNav = new EventEmitter<void>();
-  loggedInUser: DecodedToken | null = null;
+  currentUser: DecodedToken | null = null;
 
   constructor(public authService: AuthService) {}
 
   ngOnInit(): void {
-    this.getUserInfo();
-  }
-
-  getUserInfo() {
-    this.loggedInUser = this.authService.getUserInfo();
-    console.log(this.loggedInUser);
+    this.authService.$currentUser.subscribe(
+      (user) => (this.currentUser = user),
+    );
   }
 
   logout() {

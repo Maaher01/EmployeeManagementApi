@@ -31,7 +31,6 @@ namespace EmployeeManagementApi.Controllers
 
             var result = new
             {
-                username = user.UserName,
                 email = user.Email,
                 employeeId = user.EmployeeId,
                 name = user.Employee?.Name,

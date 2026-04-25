@@ -23,6 +23,12 @@ export class EmployeeService {
     });
   }
 
+  updateImage(employeeId: number, image: string): Observable<any> {
+    return this._httpClient.patch(this.apiUrl + `${employeeId}/image`, {
+      image,
+    });
+  }
+
   getAllEmployees(): Observable<Employee[]> {
     return this._httpClient.get<Employee[]>(this.apiUrl);
   }

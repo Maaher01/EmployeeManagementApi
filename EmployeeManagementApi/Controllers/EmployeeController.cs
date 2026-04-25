@@ -178,5 +178,17 @@ namespace EmployeeManagementApi.Controllers
                 return StatusCode(500, "Error uploading file: " + ex.Message);
             }
         }
+
+        [HttpPatch("{id}/image")]
+        [Authorize]
+        public async Task<IActionResult> UpdateImage(int id, [FromBody] EmployeeImageUpdateDto dto)
+        {
+            var employee = await _context.Employees.FindAsync(id);
+            if(employee == null) return NotFound();
+
+            employee.Image = dto.Image;
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
     }
 }
