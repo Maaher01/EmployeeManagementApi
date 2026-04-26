@@ -90,13 +90,13 @@ namespace EmployeeManagementApi.Controllers
 
             if(!string.IsNullOrEmpty(dto.Email)) user.Email = dto.Email;
 
-            if(!string.IsNullOrEmpty(dto.NewPassword) && dto.Role == "Admin")
+            if(!string.IsNullOrEmpty(dto.NewPassword))
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 await _userManager.ResetPasswordAsync(user, token, dto.NewPassword);
             }
 
-            if(!string.IsNullOrEmpty(dto.Role) &&  dto.Role == "Admin")
+            if(!string.IsNullOrEmpty(dto.Role))
             {
                 var currentRoles = await _userManager.GetRolesAsync(user);
                 await _userManager.RemoveFromRolesAsync(user, currentRoles);

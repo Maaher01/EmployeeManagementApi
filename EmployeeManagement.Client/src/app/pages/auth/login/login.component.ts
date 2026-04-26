@@ -37,12 +37,10 @@ export class LoginComponent {
         this.router.navigate(['/']);
       },
       error: (err) => {
-        if (err.status === 0) {
-          // Network error (no connection, server down, CORS, etc.)
-          this.errorResponse = 'Error logging in. Please try again later.';
-        } else if (err.status === 400) {
-          // Bad request / model validation
+        if (err.status === 400 || err.status === 401) {
           this.errorResponse = err.error;
+        } else {
+          this.errorResponse = 'Error logging in. Please try again later.';
         }
       },
     });

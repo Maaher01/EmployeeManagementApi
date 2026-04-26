@@ -10,8 +10,8 @@
           <mat-form-field appearance="outline" class="w-100">
             <mat-select formControlName="employeeId">
               @for (employee of employees; track employee.id) {
-                <mat-option [value]="employee.id">{{
-                  employee.name
+              <mat-option [value]="employee.id">{{
+                employee.name
                 }}</mat-option>
               }
             </mat-select>
@@ -24,87 +24,76 @@
           </mat-form-field>
 
           @if (
-            (userAddForm.controls["email"]?.dirty ||
-              userAddForm.controls["email"]?.touched) &&
-            userAddForm.controls["email"].invalid
+          (userAddForm.controls["email"]?.dirty ||
+          userAddForm.controls["email"]?.touched) &&
+          userAddForm.controls["email"].invalid
           ) {
-            <div class="m-b-16">
-              @if (userAddForm.controls["email"]?.hasError("required")) {
-                <mat-error class="text-sm">Email is required</mat-error>
-              }
-              @if (userAddForm.controls["email"]?.hasError("email")) {
-                <mat-error class="text-sm"
-                  >Please enter a valid email</mat-error
-                >
-              }
-            </div>
+          <div class="m-b-16">
+            @if (userAddForm.controls["email"]?.hasError("required")) {
+            <mat-error class="text-sm">Email is required</mat-error>
+            }
+            @if (userAddForm.controls["email"]?.hasError("email")) {
+            <mat-error class="text-sm">Please enter a valid email</mat-error>
+            }
+          </div>
           }
         </div>
         <div class="col-lg-6">
           <mat-label class="f-w-600 m-b-8 d-block">Password</mat-label>
           <mat-form-field appearance="outline" class="w-100" color="primary">
-            <input
-              matInput
-              formControlName="password"
-              id="password"
-              type="password"
-            />
+            <input matInput formControlName="password" id="password" type="password" />
           </mat-form-field>
 
           @if (
-            (userAddForm.controls["password"]?.dirty ||
-              userAddForm.controls["password"]?.touched) &&
-            userAddForm.controls["password"].invalid
+          (userAddForm.controls["password"]?.dirty ||
+          userAddForm.controls["password"]?.touched) &&
+          userAddForm.controls["password"].invalid
           ) {
-            <div class="m-b-24">
-              @if (userAddForm.controls["password"]?.hasError("required")) {
-                <mat-error class="text-sm">Password is required</mat-error>
-              }
-            </div>
+          <div class="m-b-24">
+            @if (userAddForm.controls["password"]?.hasError("required")) {
+            <mat-error class="text-sm">Password is required</mat-error>
+            }
+          </div>
           }
         </div>
 
         <div class="col-lg-6">
           @if (currentUser?.role != "HR") {
-            <mat-label class="f-w-600 m-b-8 d-block">Role</mat-label>
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-select formControlName="role">
-                @for (role of roles; track role.id) {
-                  <mat-option [value]="role.name">{{ role.name }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
+          <mat-label class="f-w-600 m-b-8 d-block">Role</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="role">
+              @for (role of roles; track role.id) {
+              <mat-option [value]="role.name">{{ role.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
 
-            @if (
-              (userAddForm.controls["role"]?.dirty ||
-                userAddForm.controls["role"]?.touched) &&
-              userAddForm.controls["role"].invalid
-            ) {
-              <div class="m-b-8">
-                @if (userAddForm.controls["role"]?.hasError("required")) {
-                  <mat-error>Role is required</mat-error>
-                }
-              </div>
+          @if (
+          (userAddForm.controls["role"]?.dirty ||
+          userAddForm.controls["role"]?.touched) &&
+          userAddForm.controls["role"].invalid
+          ) {
+          <div class="m-b-8">
+            @if (userAddForm.controls["role"]?.hasError("required")) {
+            <mat-error>Role is required</mat-error>
             }
+          </div>
+          }
           }
         </div>
 
-        @if (errorMessage) {
+        <div class="flex flex-col">
+          @if (errorMessage) {
           <mat-error>
             {{ errorMessage }}
           </mat-error>
-        }
+          }
 
-        <div class="m-t-12">
-          <button
-            mat-flat-button
-            color="primary"
-            class="m-r-8"
-            type="submit"
-            [disabled]="userAddForm.invalid"
-          >
-            Submit
-          </button>
+          <div class="m-t-12">
+            <button mat-flat-button color="primary" class="m-r-8" type="submit" [disabled]="userAddForm.invalid">
+              Submit
+            </button>
+          </div>
         </div>
       </div>
     </form>
