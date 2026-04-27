@@ -1,4 +1,6 @@
-﻿namespace EmployeeManagementApi.Models
+﻿using EmployeeManagementApi.Enums;
+
+namespace EmployeeManagementApi.Models
 {
     public class Attendance
     {
@@ -8,7 +10,7 @@
         public DateOnly Date { get; set; }
         public TimeOnly? InTime { get; set; }
         public TimeOnly? OutTime { get; set; }
-        public string? Status { get; set; }
+        public AttendanceStatus Status { get; set; }
         public string? Note { get; set; }
     }
 }
