@@ -7,6 +7,20 @@ export const navItems: NavItem[] = [
     route: '/dashboard',
   },
   {
+    displayName: 'Attendance',
+    iconName: 'solar:bill-list-line-duotone',
+    route: '',
+    chip: true,
+    children: [
+      {
+        displayName: 'Attendance Settings',
+        iconName: 'solar:settings-line-duotone',
+        route: '/attendance-settings',
+        chip: true,
+      },
+    ],
+  },
+  {
     navCap: 'HR',
     divider: true,
     roles: ['Admin', 'HR'],
