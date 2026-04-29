@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -6,16 +6,19 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { Router } from '@angular/router';
 import { MaterialModule } from 'src/app/material.module';
 import { AttendanceSettingAdd } from 'src/app/models/attendance-setting-add';
 import { Department } from 'src/app/models/department.interface';
 import { AttendanceService } from 'src/app/services/attendance.service';
 import { DepartmentService } from 'src/app/services/department.service';
+import { formatTime } from 'src/app/shared/time.format';
 
 @Component({
   selector: 'app-attendance-settings-add',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, MaterialModule],
+  providers: [provideNativeDateAdapter(), DatePipe],
   templateUrl: './attendance-settings-add.component.html',
   styleUrl: './attendance-settings-add.component.scss',
 })
@@ -36,8 +39,8 @@ export class AttendanceSettingsAddComponent implements OnInit {
   }
 
   attendanceSettingAddForm = this.fb.nonNullable.group({
-    inTime: ['', [Validators.required]],
-    outTime: ['', [Validators.required]],
+    inTime: [null as Date | null, [Validators.required]],
+    outTime: [null as Date | null, [Validators.required]],
     gracePeriodMinutes: ['', [Validators.required]],
     departmentId: ['', [Validators.required]],
   });
@@ -58,8 +61,8 @@ export class AttendanceSettingsAddComponent implements OnInit {
       this.attendanceSettingAddForm.value;
 
     const formValue: AttendanceSettingAdd = {
-      inTime: inTime ?? '',
-      outTime: outTime ?? '',
+      inTime: formatTime(inTime ?? null),
+      outTime: formatTime(outTime ?? null),
       gracePeriodMinutes: gracePeriodMinutes ? Number(gracePeriodMinutes) : 0,
       departmentId: departmentId ? Number(departmentId) : 0,
     };
