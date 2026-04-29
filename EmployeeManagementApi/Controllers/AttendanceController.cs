@@ -21,7 +21,16 @@ namespace EmployeeManagementApi.Controllers
         [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> GetSettings()
         {
-            var settings = await _context.AttendanceSettings.ToListAsync();
+            var settings = await _context.AttendanceSettings
+                .Select(s => new AttendanceSettingGetDto
+                {
+                    Id = s.Id,
+                    InTime = s.InTime,
+                    OutTime = s.OutTime,
+                    GracePeriodMinutes = s.GracePeriodMinutes,
+                    DepartmentId = s.DepartmentId,
+                    DepartmentName = s.Department.Name
+                }).ToListAsync();
 
             return Ok(settings);
         }

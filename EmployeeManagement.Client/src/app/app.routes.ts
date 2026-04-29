@@ -49,6 +49,14 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./pages/profile/profile.routes').then((m) => m.ProfileRoutes),
       },
+      {
+        path: 'attendance',
+        loadChildren: () =>
+          import('./pages/attendance/attendance.routes').then(
+            (m) => m.AttendanceRoutes,
+          ),
+        canActivate: [roleGuard(['Admin', 'HR'])],
+      },
     ],
   },
   {

@@ -1,0 +1,152 @@
+<mat-card class="cardWithShadow theme-card">
+  <mat-card-header>
+    <mat-card-title class="m-b-0">Add Attendance Setting</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content class="b-t-1">
+    <form
+      [formGroup]="attendanceSettingAddForm"
+      (ngSubmit)="addAttendanceSetting()"
+    >
+      <div class="row">
+        <!-- Department -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Department</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="departmentId">
+              @for (dept of departments; track dept.id) {
+                <mat-option [value]="dept.id">{{ dept.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          @if (
+            (attendanceSettingAddForm.controls["departmentId"]?.dirty ||
+              attendanceSettingAddForm.controls["departmentId"]?.touched) &&
+            attendanceSettingAddForm.controls["departmentId"].invalid
+          ) {
+            <div class="m-b-8">
+              @if (
+                attendanceSettingAddForm.controls["departmentId"]?.hasError(
+                  "required"
+                )
+              ) {
+                <mat-error>Department is required</mat-error>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Grace Period -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block"
+            >Grace Period (minutes)</mat-label
+          >
+          <mat-form-field appearance="outline" class="w-100" color="primary">
+            <input
+              matInput
+              formControlName="gracePeriodMinutes"
+              type="number"
+              min="0"
+              placeholder="e.g. 15"
+            />
+            <mat-hint>Extra minutes allowed after In Time</mat-hint>
+          </mat-form-field>
+          @if (
+            (attendanceSettingAddForm.controls["gracePeriodMinutes"]?.dirty ||
+              attendanceSettingAddForm.controls["gracePeriodMinutes"]
+                ?.touched) &&
+            attendanceSettingAddForm.controls["gracePeriodMinutes"].invalid
+          ) {
+            <div class="m-b-8">
+              @if (
+                attendanceSettingAddForm.controls[
+                  "gracePeriodMinutes"
+                ]?.hasError("required")
+              ) {
+                <mat-error>Grace period is required</mat-error>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- In Time -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">In Time</mat-label>
+          <mat-form-field appearance="outline" class="w-100" color="primary">
+            <input
+              matInput
+              formControlName="inTime"
+              [matTimepicker]="inTimePicker"
+              placeholder="Select in time"
+            />
+            <mat-timepicker-toggle matIconSuffix [for]="inTimePicker" />
+            <mat-timepicker #inTimePicker />
+          </mat-form-field>
+          @if (
+            (attendanceSettingAddForm.controls["inTime"]?.dirty ||
+              attendanceSettingAddForm.controls["inTime"]?.touched) &&
+            attendanceSettingAddForm.controls["inTime"].invalid
+          ) {
+            <div class="m-b-8">
+              @if (
+                attendanceSettingAddForm.controls["inTime"]?.hasError(
+                  "required"
+                )
+              ) {
+                <mat-error>In time is required</mat-error>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Out Time -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Out Time</mat-label>
+          <mat-form-field appearance="outline" class="w-100" color="primary">
+            <input
+              matInput
+              formControlName="outTime"
+              [matTimepicker]="outTimePicker"
+              placeholder="Select out time"
+            />
+            <mat-timepicker-toggle matIconSuffix [for]="outTimePicker" />
+            <mat-timepicker #outTimePicker />
+          </mat-form-field>
+          @if (
+            (attendanceSettingAddForm.controls["outTime"]?.dirty ||
+              attendanceSettingAddForm.controls["outTime"]?.touched) &&
+            attendanceSettingAddForm.controls["outTime"].invalid
+          ) {
+            <div class="m-b-8">
+              @if (
+                attendanceSettingAddForm.controls["outTime"]?.hasError(
+                  "required"
+                )
+              ) {
+                <mat-error>Out time is required</mat-error>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      @if (errorMessage) {
+        <mat-error>{{ errorMessage }}</mat-error>
+      }
+
+      <div class="m-t-12">
+        <button
+          mat-flat-button
+          color="primary"
+          class="m-r-8"
+          type="submit"
+          [disabled]="attendanceSettingAddForm.invalid"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
