@@ -1,4 +1,4 @@
-﻿namespace EmployeeManagementApi.Dtos.Attendance
+﻿namespace EmployeeManagementApi.Dtos.Attendance.Settings
 {
     public class AttendanceSettingGetDto
     {

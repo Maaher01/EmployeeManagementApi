@@ -1,10 +1,9 @@
-﻿namespace EmployeeManagementApi.Dtos.Attendance
+﻿namespace EmployeeManagementApi.Dtos.Attendance.Settings
 {
-    public class AttendanceSettingCreateDto
+    public class AttendanceSettingUpdateDto
     {
         public TimeOnly InTime { get; set; }
         public TimeOnly OutTime { get; set; }
         public int GracePeriodMinutes { get; set; }
-        public int DepartmentId { get; set; }
     }
 }

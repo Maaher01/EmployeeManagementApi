@@ -1,4 +1,6 @@
-﻿using EmployeeManagementApi.Dtos.Attendance;
+﻿using EmployeeManagementApi.Dtos.Attendance.Records;
+using EmployeeManagementApi.Dtos.Attendance.Settings;
+using EmployeeManagementApi.Enums;
 using EmployeeManagementApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -76,6 +78,96 @@ namespace EmployeeManagementApi.Controllers
 
             await _context.SaveChangesAsync();
             return Ok(setting);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, HR")]
+        public async Task<IActionResult> GetAttendanceByDate([FromQuery] DateOnly date)
+        {
+            var employees = await _context.Employees
+                .Select(e => new
+                {
+                    e.Id,
+                    e.Name
+                }).ToListAsync();
+
+            var existingRecords = await _context.Attendances
+                .Where(a => a.Date == date)
+                .ToListAsync();
+
+            var result = employees.Select(e =>
+            {
+                var record = existingRecords.FirstOrDefault(a => a.EmployeeId == e.Id);
+
+                return new AttendanceGetDto
+                {
+                    EmployeeName = e.Name,
+                    Date = date,
+                    InTime = record?.InTime,
+                    OutTime = record?.OutTime,
+                    Status = record?.Status ?? AttendanceStatus.Absent,
+                    Note = record?.Note
+                };
+            }).ToList();
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> MarkAttendance([FromBody] AttendanceCreateDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var employee = await _context.Employees
+                .Include(e => e.Department)
+                .FirstOrDefaultAsync(e => e.Id == dto.EmployeeId);
+
+            if (employee == null) return NotFound("Employee not found");
+
+            var alreadyMarked = await _context.Attendances
+                .AnyAsync(a => a.EmployeeId == dto.EmployeeId && a.Date == dto.Date);
+
+            if (alreadyMarked) return Conflict($"Attendance for {employee.Name} on {dto.Date} has already been given.");
+
+            var settings = await _context.AttendanceSettings
+                .FirstOrDefaultAsync(s => s.DepartmentId == employee.DepartmentId);
+
+            AttendanceStatus status;
+
+            if(!dto.InTime.HasValue)
+            {
+                status = AttendanceStatus.Absent;
+            } else  {
+                var allowedTime = settings?.InTime.AddMinutes(settings.GracePeriodMinutes);
+
+                status = dto.InTime.Value <= allowedTime ? AttendanceStatus.Present : AttendanceStatus.Late; 
+            }
+
+            var attendance = new Attendance
+            {
+                EmployeeId = dto.EmployeeId,
+                Date = dto.Date,
+                InTime = dto.InTime,
+                OutTime = dto.OutTime,
+                Note = dto.Note,
+                Status = status
+            };
+
+            _context.Attendances.Add(attendance);
+            await _context.SaveChangesAsync();
+
+            var result = new AttendanceGetDto
+            {
+                EmployeeName = attendance?.Employee?.Name,
+                Date = attendance.Date,
+                InTime = attendance.InTime,
+                OutTime = attendance.OutTime,
+                Status = attendance.Status,
+                Note = attendance.Note
+            };
+
+            return Ok(result);
         }
     }
 }
