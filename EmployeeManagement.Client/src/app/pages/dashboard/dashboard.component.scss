@@ -1,0 +1,57 @@
+.time-card {
+  mat-card-content {
+    display: flex;
+  }
+}
+
+.time-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e6f1fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon {
+    color: #185fa5;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &.muted {
+    background: #f1efe8;
+    mat-icon {
+      color: #888780;
+    }
+  }
+}
+
+.chevron-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #e6f1fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  mat-icon {
+    color: #185fa5;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &.muted {
+    background: #f1efe8;
+    mat-icon {
+      color: #888780;
+    }
+  }
+}

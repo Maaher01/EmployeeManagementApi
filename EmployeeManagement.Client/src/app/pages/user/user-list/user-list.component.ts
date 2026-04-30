@@ -21,7 +21,7 @@ export class UserListComponent implements OnInit {
   currentUser: DecodedToken | null = null;
   errorResponse: any;
   displayedColumns: string[] = ['email', 'role', 'action'];
-  dataSource: any;
+  dataSource: User[] = [];
 
   constructor(
     private userService: UserService,

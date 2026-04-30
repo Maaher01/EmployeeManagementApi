@@ -24,7 +24,7 @@ export class EmployeeListComponent implements OnInit {
     'dateOfJoining',
     'action',
   ];
-  dataSource: any;
+  dataSource: Employee[] = [];
 
   constructor(
     private employeeService: EmployeeService,

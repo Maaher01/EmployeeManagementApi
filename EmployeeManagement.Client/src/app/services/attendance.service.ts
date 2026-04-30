@@ -25,4 +25,8 @@ export class AttendanceService {
   getAttendanceSettings(): Observable<AttendanceSetting[]> {
     return this._httpClient.get<AttendanceSetting[]>(this.apiUrl + '/settings');
   }
+
+  editAttendanceSetting(id: number, editPayload: any) {
+    return this._httpClient.put(this.apiUrl + `/settings/${id}`, editPayload);
+  }
 }

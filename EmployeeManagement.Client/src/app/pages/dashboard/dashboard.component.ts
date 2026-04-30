@@ -5,6 +5,7 @@ import { MaterialModule } from '../../material.module';
   selector: 'app-dashboard',
   imports: [MaterialModule],
   templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
 export class DashboardComponent {}

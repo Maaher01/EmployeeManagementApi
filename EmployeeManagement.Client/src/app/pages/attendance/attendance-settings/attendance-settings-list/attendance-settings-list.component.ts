@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
+import { AttendanceSettingEditDialogComponent } from 'src/app/components/attendance-setting-edit-dialog/attendance-setting-edit-dialog.component';
 import { MaterialModule } from 'src/app/material.module';
 import { AttendanceSetting } from 'src/app/models/attendance-setting';
 import { AttendanceService } from 'src/app/services/attendance.service';
@@ -23,7 +25,10 @@ export class AttendanceSettingsListComponent implements OnInit {
   ];
   dataSource: any;
 
-  constructor(private attendanceService: AttendanceService) {}
+  constructor(
+    private attendanceService: AttendanceService,
+    private dialog: MatDialog,
+  ) {}
 
   ngOnInit(): void {
     this.getAllSettings();
@@ -40,5 +45,19 @@ export class AttendanceSettingsListComponent implements OnInit {
         this.errorResponse = err.error.message;
       },
     });
+  }
+
+  editAttendanceSetting(attendanceSetting: AttendanceSetting) {
+    const dialogConf = new MatDialogConfig();
+
+    dialogConf.disableClose = true;
+    dialogConf.autoFocus = true;
+    dialogConf.width = '500px';
+    dialogConf.data = {
+      heading: 'Edit Attendance Setting',
+      attendanceSetting: attendanceSetting,
+    };
+
+    this.dialog.open(AttendanceSettingEditDialogComponent, dialogConf);
   }
 }
