@@ -1,32 +1,25 @@
-import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment.development';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AttendanceSetting } from '../models/attendance-setting';
-import { AttendanceSettingAdd } from '../models/attendance-setting-add';
+import { environment } from 'src/environments/environment.development';
+import { Attendance } from '../models/attendance';
+import { AttendanceAdd } from '../models/attendance-add';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AttendanceService {
-  apiUrl = environment.baseUrl + 'Attendance';
+  apiUrl = environment.baseUrl + 'Attendance/';
 
   private _httpClient = inject(HttpClient);
 
-  addAttendanceSetting(
-    addPayload: AttendanceSettingAdd,
-  ): Observable<AttendanceSetting> {
-    return this._httpClient.post<AttendanceSetting>(
-      this.apiUrl + '/settings',
-      addPayload,
-    );
+  getAttendanceByDate(date: string): Observable<Attendance[]> {
+    return this._httpClient.get<Attendance[]>(this.apiUrl, {
+      params: { date: date },
+    });
   }
 
-  getAttendanceSettings(): Observable<AttendanceSetting[]> {
-    return this._httpClient.get<AttendanceSetting[]>(this.apiUrl + '/settings');
-  }
-
-  editAttendanceSetting(id: number, editPayload: any) {
-    return this._httpClient.put(this.apiUrl + `/settings/${id}`, editPayload);
+  markAttendance(addPayload: AttendanceAdd): Observable<Attendance> {
+    return this._httpClient.post<Attendance>(this.apiUrl, addPayload);
   }
 }

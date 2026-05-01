@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { AttendanceSettingEditDialogComponent } from 'src/app/components/attendance-setting-edit-dialog/attendance-setting-edit-dialog.component';
 import { MaterialModule } from 'src/app/material.module';
 import { AttendanceSetting } from 'src/app/models/attendance-setting';
-import { AttendanceService } from 'src/app/services/attendance.service';
+import { AttendanceSettingService } from 'src/app/services/attendance-setting.service';
 
 @Component({
   selector: 'app-attendance-settings-list',
@@ -26,7 +26,7 @@ export class AttendanceSettingsListComponent implements OnInit {
   dataSource: any;
 
   constructor(
-    private attendanceService: AttendanceService,
+    private attendanceSettingService: AttendanceSettingService,
     private dialog: MatDialog,
   ) {}
 
@@ -35,9 +35,8 @@ export class AttendanceSettingsListComponent implements OnInit {
   }
 
   getAllSettings() {
-    this.attendanceService.getAttendanceSettings().subscribe({
+    this.attendanceSettingService.getAttendanceSettings().subscribe({
       next: (res) => {
-        console.log(res);
         this.settings = res;
         this.dataSource = this.settings;
       },

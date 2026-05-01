@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { MaterialModule } from 'src/app/material.module';
 import { AttendanceSettingAdd } from 'src/app/models/attendance-setting-add';
 import { Department } from 'src/app/models/department.interface';
-import { AttendanceService } from 'src/app/services/attendance.service';
+import { AttendanceSettingService } from 'src/app/services/attendance-setting.service';
 import { DepartmentService } from 'src/app/services/department.service';
 import { formatTime } from 'src/app/shared/time.format';
 
@@ -30,7 +30,7 @@ export class AttendanceSettingsAddComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private attendanceService: AttendanceService,
+    private attendanceSettingService: AttendanceSettingService,
     private departmentService: DepartmentService,
   ) {}
 
@@ -67,7 +67,7 @@ export class AttendanceSettingsAddComponent implements OnInit {
       departmentId: departmentId ? Number(departmentId) : 0,
     };
 
-    this.attendanceService.addAttendanceSetting(formValue).subscribe({
+    this.attendanceSettingService.addAttendanceSetting(formValue).subscribe({
       next: (result) => {
         this.responseData = result;
         this.attendanceSettingAddForm.reset();

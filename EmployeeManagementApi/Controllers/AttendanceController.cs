@@ -5,6 +5,7 @@ using EmployeeManagementApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace EmployeeManagementApi.Controllers
 {
@@ -119,37 +120,34 @@ namespace EmployeeManagementApi.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized("User not found in token");
+
             var employee = await _context.Employees
                 .Include(e => e.Department)
-                .FirstOrDefaultAsync(e => e.Id == dto.EmployeeId);
-
-            if (employee == null) return NotFound("Employee not found");
+                .FirstOrDefaultAsync(e => e.UserId == userId);
+            if (employee == null) return NotFound("No employee record found for this user");
 
             var alreadyMarked = await _context.Attendances
-                .AnyAsync(a => a.EmployeeId == dto.EmployeeId && a.Date == dto.Date);
-
+                .AnyAsync(a => a.EmployeeId == employee.Id && a.Date == dto.Date);
             if (alreadyMarked) return Conflict($"Attendance for {employee.Name} on {dto.Date} has already been given.");
 
             var settings = await _context.AttendanceSettings
                 .FirstOrDefaultAsync(s => s.DepartmentId == employee.DepartmentId);
 
+            var inTime = TimeOnly.FromDateTime(DateTime.Now);
+
             AttendanceStatus status;
-
-            if(!dto.InTime.HasValue)
-            {
-                status = AttendanceStatus.Absent;
-            } else  {
-                var allowedTime = settings?.InTime.AddMinutes(settings.GracePeriodMinutes);
-
-                status = dto.InTime.Value <= allowedTime ? AttendanceStatus.Present : AttendanceStatus.Late; 
-            }
+            var allowedTime = settings?.InTime.AddMinutes(settings.GracePeriodMinutes);
+            status = allowedTime.HasValue 
+                ? inTime <= allowedTime ? AttendanceStatus.Present : AttendanceStatus.Late : AttendanceStatus.Present; 
 
             var attendance = new Attendance
             {
-                EmployeeId = dto.EmployeeId,
+                EmployeeId = employee.Id,
                 Date = dto.Date,
-                InTime = dto.InTime,
-                OutTime = dto.OutTime,
+                InTime = inTime,
+                OutTime = null,
                 Note = dto.Note,
                 Status = status
             };
@@ -159,7 +157,9 @@ namespace EmployeeManagementApi.Controllers
 
             var result = new AttendanceGetDto
             {
-                EmployeeName = attendance?.Employee?.Name,
+                Id = attendance.Id,
+                EmployeeId = employee.Id,
+                EmployeeName = employee.Name,
                 Date = attendance.Date,
                 InTime = attendance.InTime,
                 OutTime = attendance.OutTime,

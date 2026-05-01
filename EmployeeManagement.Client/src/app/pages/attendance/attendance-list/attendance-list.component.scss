@@ -1,0 +1,36 @@
+.date-picker-field {
+  width: 180px;
+  margin-bottom: -20px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.status-chip {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+
+  &.chip-present {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.chip-late {
+    background-color: #fff8e1;
+    color: #f57f17;
+  }
+
+  &.chip-absent {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+}

@@ -4,6 +4,8 @@ namespace EmployeeManagementApi.Dtos.Attendance.Records
 {
     public class AttendanceGetDto
     {
+        public int Id { get; set; }
+        public int? EmployeeId { get; set; }
         public string? EmployeeName { get; set; }
         public DateOnly Date { get; set; }
         public TimeOnly? InTime { get; set; }

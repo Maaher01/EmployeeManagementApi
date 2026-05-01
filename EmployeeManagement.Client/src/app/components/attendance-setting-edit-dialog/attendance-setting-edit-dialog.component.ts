@@ -8,7 +8,7 @@ import {
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material.module';
-import { AttendanceService } from 'src/app/services/attendance.service';
+import { AttendanceSettingService } from 'src/app/services/attendance-setting.service';
 import { formatTime, parseTime } from 'src/app/shared/time.format';
 
 @Component({
@@ -29,7 +29,7 @@ export class AttendanceSettingEditDialogComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private attendanceService: AttendanceService,
+    private attendanceSettingService: AttendanceSettingService,
     private dialogRef: MatDialogRef<AttendanceSettingEditDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
@@ -58,7 +58,7 @@ export class AttendanceSettingEditDialogComponent implements OnInit {
         ) ?? 0,
     };
 
-    this.attendanceService
+    this.attendanceSettingService
       .editAttendanceSetting(this.data.attendanceSetting.id, payload)
       .subscribe({
         next: () => {

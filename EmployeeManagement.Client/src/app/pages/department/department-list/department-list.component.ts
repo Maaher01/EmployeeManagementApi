@@ -7,7 +7,6 @@ import { DepartmentService } from 'src/app/services/department.service';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { WarningDialogComponent } from 'src/app/components/warning-dialog/warning-dialog.component';
 import { DepartmentEditDialogComponent } from 'src/app/components/department-edit-dialog/department-edit-dialog.component';
-import { Employee } from 'src/app/models/employee.interface';
 
 @Component({
   selector: 'app-department-list',

@@ -1,0 +1,37 @@
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+    <!-- In Time -->
+    <mat-card class="time-card">
+        <mat-card-content class="flex items-center justify-between">
+            <div class="flex items-center gap-5">
+                <div class="time-icon mr-2">
+                    <mat-icon class="text-primary">schedule</mat-icon>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-400 mb-0">In Time</p>
+                    <p class="text-base font-semibold text-primary mt-1">10:29 AM</p>
+                </div>
+            </div>
+            <button class="chevron-btn" (click)="markAttendance()">
+                <mat-icon>expand_more</mat-icon>
+            </button>
+        </mat-card-content>
+    </mat-card>
+
+    <!-- Out Time -->
+    <mat-card class="time-card">
+        <mat-card-content class="flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="time-icon muted mr-4">
+                    <mat-icon>schedule</mat-icon>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-400 mb-0">Out Time</p>
+                    <p class="ext-base text-muted m-b-0 mt-1">Not recorded</p>
+                </div>
+            </div>
+            <button class="chevron-btn muted">
+                <mat-icon>expand_more</mat-icon>
+            </button>
+        </mat-card-content>
+    </mat-card>
+</div>

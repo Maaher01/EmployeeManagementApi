@@ -17,6 +17,12 @@ export const navItems: NavItem[] = [
         route: '/attendance/settings',
         chip: true,
       },
+      {
+        displayName: 'Attendance List',
+        iconName: 'solar:list-line-duotone',
+        route: '/attendance',
+        chip: true,
+      },
     ],
   },
   {
