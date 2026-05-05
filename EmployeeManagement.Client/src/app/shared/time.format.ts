@@ -11,3 +11,9 @@ export function parseTime(timeString: string): Date {
   date.setHours(hours, minutes, 0, 0);
   return date;
 }
+
+export function displayTime(time: string | null): string {
+  if (!time) return '';
+  const date = new Date(`1970-01-01T${time}`);
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}

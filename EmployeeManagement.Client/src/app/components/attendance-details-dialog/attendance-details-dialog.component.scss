@@ -1,0 +1,22 @@
+.status-chip {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+
+  &.chip-present {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.chip-late {
+    background-color: #fff8e1;
+    color: #f57f17;
+  }
+
+  &.chip-absent {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+}

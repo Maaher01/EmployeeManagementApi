@@ -1,0 +1,61 @@
+<mat-card class="cardWithShadow theme-card">
+    <mat-card-header>
+        <div class="flex flex-row justify-between items-center w-100">
+            <mat-card-title class="m-b-0">{{ heading }}</mat-card-title>
+            <mat-icon class="cursor-pointer" (click)="closeDialog()">close</mat-icon>
+        </div>
+    </mat-card-header>
+
+    <mat-card-content class="b-t-1">
+        <div class="row m-t-16">
+
+            <!-- Employee Name -->
+            <div class="col-6 m-b-16">
+                <p class="text-xs text-gray-400 m-b-4">Employee</p>
+                <p class="f-s-14 f-w-600 m-b-0">{{ data.attendance.employeeName ?? '—' }}</p>
+            </div>
+
+            <!-- Date -->
+            <div class="col-6 m-b-16">
+                <p class="text-xs text-gray-400 m-b-4">Date</p>
+                <p class="f-s-14 f-w-600 m-b-0">{{ data.attendance.date | date: 'dd MMM, yyyy' }}</p>
+            </div>
+
+            <!-- In Time -->
+            <div class="col-6 m-b-16">
+                <p class="text-xs text-gray-400 m-b-4">In Time</p>
+                <p class="f-s-14 f-w-600 m-b-0">
+                    {{ data.attendance.inTime
+                    ? ("1970-01-01T" + data.attendance.inTime | date: "shortTime")
+                    : "—" }}
+                </p>
+            </div>
+
+            <!-- Out Time -->
+            <div class="col-6 m-b-16">
+                <p class="text-xs text-gray-400 m-b-4">Out Time</p>
+                <p class="f-s-14 f-w-600 m-b-0">
+                    {{ data.attendance.outTime
+                    ? ("1970-01-01T" + data.attendance.outTime | date: "shortTime")
+                    : "—" }}
+                </p>
+            </div>
+
+            <!-- Status -->
+            <div class="col-6 m-b-16">
+                <p class="text-xs text-gray-400 m-b-4">Status</p>
+                <span class="status-chip" [ngClass]="getStatus(data.attendance.status).class">
+                    {{ getStatus(data.attendance.status).label }}
+                </span>
+            </div>
+
+            <!-- Note -->
+            <div class="col-6 m-b-16">
+                <p class="text-xs text-gray-400 m-b-4">Note</p>
+                <p class="f-s-14 f-w-600 m-b-0">{{ data.attendance.note ?? '—' }}</p>
+            </div>
+
+        </div>
+
+    </mat-card-content>
+</mat-card>

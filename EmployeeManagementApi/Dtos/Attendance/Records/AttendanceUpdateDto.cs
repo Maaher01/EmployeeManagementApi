@@ -1,7 +1,8 @@
 ﻿namespace EmployeeManagementApi.Dtos.Attendance.Records
 {
-    public class AttendanceCreateDto
+    public class AttendanceUpdateDto
     {
+        public TimeOnly? OutTime { get; set; }
         public string? Note { get; set; }
     }
 }

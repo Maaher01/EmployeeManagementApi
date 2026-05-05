@@ -1,19 +1,35 @@
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+
     <!-- In Time -->
     <mat-card class="time-card">
         <mat-card-content class="flex items-center justify-between">
             <div class="flex items-center gap-5">
-                <div class="time-icon mr-2">
-                    <mat-icon class="text-primary">schedule</mat-icon>
+                <div class="time-icon mr-2" [class.muted]="!todayAttendance?.inTime">
+                    <mat-icon [class.text-primary]="todayAttendance?.inTime">schedule</mat-icon>
                 </div>
                 <div>
                     <p class="text-xs text-gray-400 mb-0">In Time</p>
-                    <p class="text-base font-semibold text-primary mt-1">10:29 AM</p>
+                    @if (todayAttendance?.inTime) {
+                    <p class="text-base font-semibold text-primary mt-1">
+                        {{ displayTime(todayAttendance!.inTime) }}
+                    </p>
+                    } @else {
+                    <p class="text-sm text-gray-400 mt-1">Not recorded</p>
+                    }
                 </div>
             </div>
+
+            <!-- show button only if not yet marked -->
+            @if (!todayAttendance?.inTime) {
             <button class="chevron-btn" (click)="markAttendance()">
                 <mat-icon>expand_more</mat-icon>
             </button>
+            } @else {
+            <div class="chevron-btn muted">
+                <mat-icon>check</mat-icon>
+            </div>
+            }
+
         </mat-card-content>
     </mat-card>
 
@@ -21,17 +37,26 @@
     <mat-card class="time-card">
         <mat-card-content class="flex items-center justify-between">
             <div class="flex items-center">
-                <div class="time-icon muted mr-4">
+                <button class="time-icon muted mr-4" [class.muted]="!todayAttendance?.outTime">
                     <mat-icon>schedule</mat-icon>
-                </div>
+                </button>
                 <div>
                     <p class="text-xs text-gray-400 mb-0">Out Time</p>
-                    <p class="ext-base text-muted m-b-0 mt-1">Not recorded</p>
+                    @if (todayAttendance?.outTime) {
+                    <p class="text-base font-semibold text-primary mt-1">
+                        {{ displayTime(todayAttendance!.outTime) }}
+                    </p>
+                    } @else {
+                    <p class="text-sm text-gray-400 mt-1">Not recorded</p>
+                    }
                 </div>
             </div>
-            <button class="chevron-btn muted">
+
+            <button class="chevron-btn" (click)="updateAttendance(todayAttendance!)">
                 <mat-icon>expand_more</mat-icon>
             </button>
+
         </mat-card-content>
     </mat-card>
+
 </div>

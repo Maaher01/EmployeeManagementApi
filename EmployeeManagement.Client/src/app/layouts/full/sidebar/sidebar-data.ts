@@ -12,15 +12,31 @@ export const navItems: NavItem[] = [
     chip: true,
     children: [
       {
+        displayName: 'My Attendance',
+        iconName: 'solar:banknote-line-duotone',
+        route: '/attendance/employee',
+        roles: ['Employee', 'HR'],
+        chip: true,
+      },
+      {
         displayName: 'Attendance Settings',
         iconName: 'solar:settings-line-duotone',
         route: '/attendance/settings',
+        roles: ['Admin', 'HR'],
         chip: true,
       },
       {
         displayName: 'Attendance List',
         iconName: 'solar:list-line-duotone',
         route: '/attendance',
+        roles: ['Admin', 'HR'],
+        chip: true,
+      },
+      {
+        displayName: 'Monthly User Attendance',
+        iconName: 'solar:calendar-date-line-duotone',
+        route: '/attendance/employee/month',
+        roles: ['Admin', 'HR'],
         chip: true,
       },
     ],

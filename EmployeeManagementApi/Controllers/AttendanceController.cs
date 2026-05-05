@@ -1,5 +1,4 @@
 ﻿using EmployeeManagementApi.Dtos.Attendance.Records;
-using EmployeeManagementApi.Dtos.Attendance.Settings;
 using EmployeeManagementApi.Enums;
 using EmployeeManagementApi.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -20,70 +19,9 @@ namespace EmployeeManagementApi.Controllers
             _context = context;
         }
 
-        [HttpGet("settings")]
-        [Authorize(Roles = "Admin, HR")]
-        public async Task<IActionResult> GetSettings()
-        {
-            var settings = await _context.AttendanceSettings
-                .Select(s => new AttendanceSettingGetDto
-                {
-                    Id = s.Id,
-                    InTime = s.InTime,
-                    OutTime = s.OutTime,
-                    GracePeriodMinutes = s.GracePeriodMinutes,
-                    DepartmentId = s.DepartmentId,
-                    DepartmentName = s.Department.Name
-                }).ToListAsync();
-
-            return Ok(settings);
-        }
-
-        [HttpPost("settings")]
-        [Authorize(Roles = "Admin, HR")]
-        public async Task<IActionResult> AddSettings([FromBody] AttendanceSettingCreateDto dto)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var departmentExists = await _context.Departments.AnyAsync(d => d.Id == dto.DepartmentId);
-            if (!departmentExists) return BadRequest("Department does not exist");
-
-            var settingExists = await _context.AttendanceSettings.AnyAsync(s => s.DepartmentId == dto.DepartmentId);
-            if (settingExists) return BadRequest("Settings for this department already exists");
-
-            var setting = new AttendanceSetting
-            {
-                InTime = dto.InTime,
-                OutTime = dto.OutTime,
-                GracePeriodMinutes = dto.GracePeriodMinutes,
-                DepartmentId = dto.DepartmentId
-            };
-
-            _context.AttendanceSettings.Add(setting);
-            await _context.SaveChangesAsync();
-
-            return Ok(setting);
-        }
-
-        [HttpPut("settings/{id}")]
-        [Authorize(Roles = "Admin, HR")]
-        public async Task<IActionResult> UpdateSettings(int id, [FromBody] AttendanceSettingUpdateDto dto)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var setting = await _context.AttendanceSettings.FindAsync(id);
-            if (setting == null) return NotFound();
-
-            setting.InTime = dto.InTime;
-            setting.OutTime = dto.OutTime;
-            setting.GracePeriodMinutes = dto.GracePeriodMinutes;
-
-            await _context.SaveChangesAsync();
-            return Ok(setting);
-        }
-
         [HttpGet]
         [Authorize(Roles = "Admin, HR")]
-        public async Task<IActionResult> GetAttendanceByDate([FromQuery] DateOnly date)
+        public async Task<IActionResult> GetAttendanceByDate([FromQuery] DateTime date)
         {
             var employees = await _context.Employees
                 .Select(e => new
@@ -114,28 +52,167 @@ namespace EmployeeManagementApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet("employee/month")]
+        [Authorize(Roles ="Admin, HR")]
+        public async Task<IActionResult> GetEmployeeMonthlyAttendance(int id, [FromQuery] int month, [FromQuery] int year)
+        {
+            var employee = await _context.Employees
+                .FirstOrDefaultAsync(e => e.Id == id);
+            if (employee == null) return NotFound("Employee not found");
+
+            var attendances = await _context.Attendances
+                .Where(a => a.EmployeeId == id && a.Date.Month == month && a.Date.Year == year)
+                .OrderByDescending(a => a.Date)
+                .Select(a => new AttendanceGetDto
+                {
+                    Id = a.Id,
+                    EmployeeId = a.EmployeeId,
+                    EmployeeName =a.Employee.Name,
+                    Date = a.Date,
+                    InTime = a.InTime,
+                    OutTime = a.OutTime,
+                    Status = a.Status,
+                    Note = a.Note
+                }).ToListAsync();
+
+            return Ok(attendances);
+        }
+        
+        [HttpGet("employee")]
+        [Authorize(Roles = "Employee, HR")]
+        public async Task<IActionResult> GetEmployeeAttendance()
+        {
+            var userId = User.FindFirstValue("uid");
+            if (userId == null) return Unauthorized("User not found in token");
+
+            var user = await _context.Users
+                .Include(u => u.Employee)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+            if (user?.Employee == null) return NotFound("No employee record found for this user");
+
+            var employee = user.Employee;
+
+            var allAttendance = await _context.Attendances
+                .Where(a => a.EmployeeId == employee.Id)
+                .OrderByDescending(a => a.Date)
+                .ToListAsync();
+
+            var result = allAttendance.Select(a =>
+            {
+                return new AttendanceGetDto
+                {
+                    Id = a.Id,
+                    EmployeeId = a?.Employee?.Id,
+                    EmployeeName = a.Employee?.Name,
+                    Date = a.Date,
+                    InTime = a.InTime,
+                    OutTime = a.OutTime,
+                    Status = a.Status,
+                    Note = a.Note
+                };
+            }).ToList();
+
+            return Ok(result);
+        }
+        
+        [HttpGet("employee/today")]
+        [Authorize]
+        public async Task<IActionResult> GetTodayAttendanceByEmployee()
+        {
+            var userId = User.FindFirstValue("uid");
+            if (userId == null) return Unauthorized("User not found in token");
+
+            var user = await _context.Users
+                .Include(u => u.Employee)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+            if (user?.Employee == null) return NotFound("No employee record found for this user");
+
+            var employee = user.Employee;
+
+            var date = DateTime.Today;
+
+            var todayAttendance = await _context.Attendances
+                .FirstOrDefaultAsync(a => a.EmployeeId == employee.Id && a.Date == date);
+
+            if (todayAttendance == null)
+            {
+                return Ok(new AttendanceGetDto
+                {
+                    EmployeeId = employee.Id,
+                    EmployeeName = employee.Name,
+                    Date = date,
+                    InTime = null,
+                    OutTime = null,
+                    Status = null,
+                    Note = null
+                });
+            }
+
+            var result = new AttendanceGetDto
+            {
+                Id = todayAttendance.Id,
+                EmployeeId = employee.Id,
+                EmployeeName = employee.Name,
+                Date = todayAttendance.Date,
+                InTime = todayAttendance.InTime,
+                OutTime = todayAttendance.OutTime,
+                Status = todayAttendance.Status,
+                Note = todayAttendance.Note
+            };
+
+            return Ok(result);
+
+        }
+
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, HR")]
+        public async Task<IActionResult> GetAttendanceDetails(int id)
+        {
+            var attendance = await _context.Attendances
+                .Include(e => e.Employee)
+                .FirstOrDefaultAsync(e => e.Id == id);
+            if (attendance == null) return NotFound();
+
+            var result = new AttendanceGetDto
+            {
+                Id = attendance.Id,
+                EmployeeId = attendance.Employee.Id,
+                EmployeeName = attendance.Employee.Name,
+                Date = attendance.Date,
+                InTime = attendance.InTime,
+                OutTime = attendance.OutTime,
+                Status = attendance.Status,
+                Note = attendance.Note
+            };
+
+            return Ok(result);
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> MarkAttendance([FromBody] AttendanceCreateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue("uid");
             if (userId == null) return Unauthorized("User not found in token");
 
-            var employee = await _context.Employees
-                .Include(e => e.Department)
-                .FirstOrDefaultAsync(e => e.UserId == userId);
-            if (employee == null) return NotFound("No employee record found for this user");
+            var user = await _context.Users
+                .Include(u => u.Employee)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+            if (user?.Employee == null) return NotFound("No employee record found for this user");
+
+            var employee = user.Employee;
+
+            var date = DateTime.Today;
+            var inTime = TimeOnly.FromDateTime(DateTime.Now);
 
             var alreadyMarked = await _context.Attendances
-                .AnyAsync(a => a.EmployeeId == employee.Id && a.Date == dto.Date);
-            if (alreadyMarked) return Conflict($"Attendance for {employee.Name} on {dto.Date} has already been given.");
+                .AnyAsync(a => a.EmployeeId == employee.Id && a.Date == date && a.InTime != null);
+            if (alreadyMarked) return Conflict($"Attendance for {employee.Name} on {date} has already been given.");
 
             var settings = await _context.AttendanceSettings
                 .FirstOrDefaultAsync(s => s.DepartmentId == employee.DepartmentId);
-
-            var inTime = TimeOnly.FromDateTime(DateTime.Now);
 
             AttendanceStatus status;
             var allowedTime = settings?.InTime.AddMinutes(settings.GracePeriodMinutes);
@@ -145,7 +222,7 @@ namespace EmployeeManagementApi.Controllers
             var attendance = new Attendance
             {
                 EmployeeId = employee.Id,
-                Date = dto.Date,
+                Date = date,
                 InTime = inTime,
                 OutTime = null,
                 Note = dto.Note,
@@ -165,6 +242,56 @@ namespace EmployeeManagementApi.Controllers
                 OutTime = attendance.OutTime,
                 Status = attendance.Status,
                 Note = attendance.Note
+            };
+
+            return Ok(result);
+        }
+
+        [HttpPut("employee/edit")]
+        [Authorize]
+        public async Task<IActionResult> EmployeeUpdateAttendance([FromBody] AttendanceUpdateDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var userId = User.FindFirstValue("uid");
+            if (userId == null) return Unauthorized("User not found in token");
+
+            var user = await _context.Users
+                .Include(u => u.Employee)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+            if (user?.Employee == null) return NotFound("No employee record found for this user");
+
+            var today = DateTime.Today;
+
+            var existingAttendance = await _context.Attendances
+                .Include(a => a.Employee)
+                .FirstOrDefaultAsync(a => a.EmployeeId == user.Employee.Id && a.Date == today);
+
+            var outTime = TimeOnly.FromDateTime(DateTime.Now);
+
+            if (existingAttendance == null || existingAttendance.InTime == null)
+            {
+                return BadRequest("You must check in before checking out.");
+            }
+            else
+            {
+                existingAttendance.OutTime = outTime;
+            }
+
+            existingAttendance.Note = dto.Note;
+
+            await _context.SaveChangesAsync();
+
+            var result = new AttendanceGetDto
+            {
+                Id = existingAttendance.Id,
+                EmployeeId = existingAttendance.EmployeeId,
+                EmployeeName = existingAttendance?.Employee?.Name,
+                Date = existingAttendance.Date,
+                InTime = existingAttendance.InTime,
+                OutTime = existingAttendance.OutTime,
+                Status = existingAttendance.Status,
+                Note = existingAttendance.Note
             };
 
             return Ok(result);

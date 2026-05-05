@@ -1,0 +1,52 @@
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { MaterialModule } from 'src/app/material.module';
+import { Attendance } from 'src/app/models/attendance';
+import { AttendanceService } from 'src/app/services/attendance.service';
+
+@Component({
+  selector: 'app-employee-attendance-list',
+  imports: [CommonModule, MaterialModule],
+  templateUrl: './employee-attendance-list.component.html',
+  styleUrl: './employee-attendance-list.component.scss',
+})
+export class EmployeeAttendanceListComponent implements OnInit {
+  myAttendance: Attendance[] = [];
+  errorResponse: any;
+  isLoading: boolean = false;
+  displayedColumns: string[] = ['date', 'inTime', 'outTime', 'note', 'status'];
+
+  constructor(private attendanceService: AttendanceService) {}
+
+  ngOnInit(): void {
+    this.getAllAttendance();
+  }
+
+  getAllAttendance() {
+    this.isLoading = true;
+
+    this.attendanceService.getEmployeeAttendance().subscribe({
+      next: (res) => {
+        this.myAttendance = res;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorResponse = err.error.message;
+        this.isLoading = false;
+      },
+    });
+  }
+
+  getStatus(status: number): { label: string; class: string } {
+    switch (status) {
+      case 0:
+        return { label: 'Present', class: 'chip-present' };
+      case 1:
+        return { label: 'Late', class: 'chip-late' };
+      case 2:
+        return { label: 'Absent', class: 'chip-absent' };
+      default:
+        return { label: 'Unknown', class: '' };
+    }
+  }
+}

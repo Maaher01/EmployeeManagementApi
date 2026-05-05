@@ -1,57 +1,53 @@
-import { formatDate } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material.module';
 import { AttendanceService } from 'src/app/services/attendance.service';
 
 @Component({
-  selector: 'app-attendance-mark-dialog',
+  selector: 'app-out-time-submit-dialog',
   imports: [FormsModule, ReactiveFormsModule, MaterialModule],
-  providers: [provideNativeDateAdapter()],
-  templateUrl: './attendance-mark-dialog.component.html',
+  templateUrl: './out-time-submit-dialog.component.html',
 })
-export class AttendanceMarkDialogComponent implements OnInit {
+export class OutTimeSubmitDialogComponent implements OnInit {
   heading: string;
   errorMessage: any;
 
-  inTimeForm = this.fb.nonNullable.group({
+  outTimeForm = this.fb.nonNullable.group({
     note: [''],
   });
 
   ngOnInit(): void {
-    this.inTimeForm.patchValue({
-      note: this.data.inTimeForm.note,
+    this.outTimeForm.patchValue({
+      note: this.data.attendance.note,
     });
   }
 
   constructor(
     private fb: FormBuilder,
     private attendanceService: AttendanceService,
-    private dialogRef: MatDialogRef<AttendanceMarkDialogComponent>,
+    private dialogRef: MatDialogRef<OutTimeSubmitDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.heading = data.heading;
   }
 
-  markAttendance() {
+  updateAttendance() {
     const payload = {
-      note: this.inTimeForm.controls['note'].value,
+      note: this.outTimeForm.controls['note'].value!,
     };
 
-    this.attendanceService.markAttendance(payload).subscribe({
+    this.attendanceService.updateEmployeeAttendance(payload).subscribe({
       next: () => {
         this.closeDialog();
         window.location.reload();
       },
       error: (err) => {
-        this.errorMessage = err.message;
+        if (err.status === 400 || err.status === 401) {
+          this.errorMessage = err.error;
+        } else {
+          this.errorMessage = 'Error updating. Please try again later.';
+        }
       },
     });
   }

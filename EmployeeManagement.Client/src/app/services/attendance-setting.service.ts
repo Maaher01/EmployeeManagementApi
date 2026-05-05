@@ -9,7 +9,7 @@ import { AttendanceSettingAdd } from '../models/attendance-setting-add';
   providedIn: 'root',
 })
 export class AttendanceSettingService {
-  apiUrl = environment.baseUrl + 'Attendance/settings/';
+  apiUrl = environment.baseUrl + 'AttendanceSettings/';
 
   private _httpClient = inject(HttpClient);
 

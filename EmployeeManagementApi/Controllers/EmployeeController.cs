@@ -44,7 +44,6 @@ namespace EmployeeManagementApi.Controllers
             var employee = await _context.Employees
                 .Include(e => e.Department)
                 .FirstOrDefaultAsync(e =>  e.Id == id);
-
             if (employee == null) return NotFound();
 
             var result = new EmployeeGetDto

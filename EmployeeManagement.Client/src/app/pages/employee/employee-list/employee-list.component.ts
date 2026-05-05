@@ -63,8 +63,6 @@ export class EmployeeListComponent implements OnInit {
           },
           error: (err) => {
             if (err) {
-              console.log(err);
-
               this.dialog.open(WarningDialogComponent, {
                 width: '400px',
                 data: {

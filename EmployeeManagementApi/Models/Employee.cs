@@ -5,7 +5,6 @@ namespace EmployeeManagementApi.Models
     public class Employee
     {
         public int Id { get; set; }
-        public string? UserId { get; set; }
 
         [Required]
         [StringLength(100)]

@@ -19,7 +19,33 @@ export class AttendanceService {
     });
   }
 
+  getMonthlyAttendanceByEmployee(
+    id: number,
+    month: number,
+    year: number,
+  ): Observable<Attendance[]> {
+    return this._httpClient.get<Attendance[]>(this.apiUrl + 'employee/month', {
+      params: { id: id, month: month, year: year },
+    });
+  }
+
   markAttendance(addPayload: AttendanceAdd): Observable<Attendance> {
     return this._httpClient.post<Attendance>(this.apiUrl, addPayload);
+  }
+
+  getAttendanceDetails(id: number) {
+    return this._httpClient.get<Attendance>(this.apiUrl + `${id}`);
+  }
+
+  updateEmployeeAttendance(editPayload: any) {
+    return this._httpClient.put(this.apiUrl + `employee/edit`, editPayload);
+  }
+
+  getEmployeeAttendance(): Observable<Attendance[]> {
+    return this._httpClient.get<Attendance[]>(this.apiUrl + 'employee');
+  }
+
+  getTodayAttendanceByEmployee(): Observable<Attendance> {
+    return this._httpClient.get<Attendance>(this.apiUrl + 'employee/today');
   }
 }

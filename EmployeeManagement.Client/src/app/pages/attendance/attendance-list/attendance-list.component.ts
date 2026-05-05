@@ -2,6 +2,9 @@ import { CommonModule, formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AttendanceDetailsDialogComponent } from 'src/app/components/attendance-details-dialog/attendance-details-dialog.component';
 import { MaterialModule } from 'src/app/material.module';
 import { Attendance } from 'src/app/models/attendance';
 import { AttendanceService } from 'src/app/services/attendance.service';
@@ -23,29 +26,67 @@ export class AttendanceListComponent implements OnInit {
     'date',
     'inTime',
     'outTime',
-    'note',
     'status',
     'actions',
   ];
   dataSource: any;
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      const dateParam = params['date'];
+      const date = dateParam ? new Date(dateParam) : new Date();
+
+      this.dateControl.setValue(date, { emitEvent: false });
+      this.getAttendanceByDate(date);
+    });
+
     this.getAttendanceByDate(new Date());
 
     this.dateControl.valueChanges.subscribe((date) => {
-      if (date) this.getAttendanceByDate(date);
+      if (date) {
+        const dateStr = formatDate(date, 'yyyy-MM-dd', 'en');
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { date: dateStr },
+          queryParamsHandling: 'merge',
+        });
+      }
     });
   }
 
-  constructor(private attendanceService: AttendanceService) {}
+  constructor(
+    private attendanceService: AttendanceService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private dialog: MatDialog,
+  ) {}
+
+  viewAttendanceDetails(attendance: Attendance) {
+    const dialogConf = new MatDialogConfig();
+
+    dialogConf.disableClose = true;
+    dialogConf.autoFocus = true;
+    dialogConf.width = '500px';
+    dialogConf.data = {
+      heading: 'Attendance Details',
+      attendance: attendance,
+    };
+
+    const dialogRef = this.dialog.open(
+      AttendanceDetailsDialogComponent,
+      dialogConf,
+    );
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) this.getAttendanceByDate(this.dateControl.value!);
+    });
+  }
 
   getAttendanceByDate(date: Date) {
     this.isLoading = true;
     const dateStr = formatDate(date, 'yyyy-MM-dd', 'en');
     this.attendanceService.getAttendanceByDate(dateStr).subscribe({
       next: (res) => {
-        console.log(res);
-
         this.attendance = res;
         this.dataSource = this.attendance;
         this.isLoading = false;

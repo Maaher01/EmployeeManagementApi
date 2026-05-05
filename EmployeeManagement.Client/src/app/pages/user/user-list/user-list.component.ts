@@ -17,7 +17,7 @@ import { UserService } from 'src/app/services/user.service';
   templateUrl: './user-list.component.html',
 })
 export class UserListComponent implements OnInit {
-  users: User[];
+  users: User[] = [];
   currentUser: DecodedToken | null = null;
   errorResponse: any;
   displayedColumns: string[] = ['email', 'role', 'action'];

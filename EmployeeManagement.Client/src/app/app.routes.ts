@@ -55,7 +55,6 @@ export const routes: Routes = [
           import('./pages/attendance/attendance.routes').then(
             (m) => m.AttendanceRoutes,
           ),
-        canActivate: [roleGuard(['Admin', 'HR'])],
       },
     ],
   },

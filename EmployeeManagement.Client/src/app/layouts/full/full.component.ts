@@ -91,9 +91,15 @@ export class FullComponent implements OnInit {
     if (token) {
       const decoded: any = jwtDecode(token);
       const userRole = decoded.role;
-      this.navItems = navItems.filter(
-        (item) => !item.roles || item.roles.includes(userRole),
-      );
+
+      this.navItems = navItems
+        .filter((item) => !item.roles || item.roles.includes(userRole))
+        .map((item) => ({
+          ...item,
+          children: item.children?.filter(
+            (child) => !child.roles || child.roles.includes(userRole),
+          ),
+        }));
     }
   }
 
