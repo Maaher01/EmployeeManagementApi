@@ -27,6 +27,8 @@
     "angular-tabler-icons": "^3.26.0",
     "apexcharts": "^4.7.0",
     "iconify": "^1.4.0",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.7",
     "jwt-decode": "^4.0.0",
     "ng-apexcharts": "^1.16.0",
     "ngx-scrollbar": "^18.0.0",
@@ -35,6 +37,7 @@
     "sass": "^1.95.0",
     "tailwindcss": "^4.1.18",
     "tslib": "^2.8.1",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.15.1"
   },
   "devDependencies": {

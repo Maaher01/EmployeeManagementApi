@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { MaterialModule } from 'src/app/material.module';
 import { Attendance } from 'src/app/models/attendance';
 import { AttendanceService } from 'src/app/services/attendance.service';
@@ -11,10 +13,12 @@ import { AttendanceService } from 'src/app/services/attendance.service';
   styleUrl: './employee-attendance-list.component.scss',
 })
 export class EmployeeAttendanceListComponent implements OnInit {
-  myAttendance: Attendance[] = [];
+  myAttendance = new MatTableDataSource<Attendance>([]);
   errorResponse: any;
   isLoading: boolean = false;
   displayedColumns: string[] = ['date', 'inTime', 'outTime', 'note', 'status'];
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(private attendanceService: AttendanceService) {}
 
@@ -22,12 +26,16 @@ export class EmployeeAttendanceListComponent implements OnInit {
     this.getAllAttendance();
   }
 
+  ngAfterViewInit() {
+    this.myAttendance.paginator = this.paginator;
+  }
+
   getAllAttendance() {
     this.isLoading = true;
 
     this.attendanceService.getEmployeeAttendance().subscribe({
       next: (res) => {
-        this.myAttendance = res;
+        this.myAttendance.data = res;
         this.isLoading = false;
       },
       error: (err) => {

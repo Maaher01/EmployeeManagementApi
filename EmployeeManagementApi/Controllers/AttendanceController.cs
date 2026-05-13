@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EmployeeManagementApi.Controllers
 {
@@ -20,7 +21,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin,HR")]
         public async Task<IActionResult> GetAttendanceByDate([FromQuery] DateTime date)
         {
             var employees = await _context.Employees
@@ -53,7 +54,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpGet("employee/month")]
-        [Authorize(Roles ="Admin, HR")]
+        [Authorize(Roles ="Admin,HR")]
         public async Task<IActionResult> GetEmployeeMonthlyAttendance(int id, [FromQuery] int month, [FromQuery] int year)
         {
             var employee = await _context.Employees
@@ -62,24 +63,48 @@ namespace EmployeeManagementApi.Controllers
 
             var attendances = await _context.Attendances
                 .Where(a => a.EmployeeId == id && a.Date.Month == month && a.Date.Year == year)
-                .OrderByDescending(a => a.Date)
-                .Select(a => new AttendanceGetDto
-                {
-                    Id = a.Id,
-                    EmployeeId = a.EmployeeId,
-                    EmployeeName =a.Employee.Name,
-                    Date = a.Date,
-                    InTime = a.InTime,
-                    OutTime = a.OutTime,
-                    Status = a.Status,
-                    Note = a.Note
-                }).ToListAsync();
+                .ToListAsync();
 
-            return Ok(attendances);
+            var today = DateTime.Today;
+
+            var daysInMonth = DateTime.DaysInMonth(year, month);
+            var allDates = Enumerable.Range(1, daysInMonth)
+                .Select(d => new DateTime(year, month, d) )
+                .Where(d => d <= today)
+                .ToList();
+
+            var result = allDates.Select(date =>
+            {
+                var record = attendances.FirstOrDefault(a => a.Date == date);
+                return record != null
+                ? new AttendanceGetDto
+                {
+                    Id = record.Id,
+                    EmployeeId = record.EmployeeId,
+                    EmployeeName = employee.Name,
+                    Date = record.Date,
+                    InTime = record.InTime,
+                    OutTime = record.OutTime,
+                    Status = record.Status,
+                    Note = record.Note
+                } : new AttendanceGetDto
+                {
+                    Id = 0,
+                    EmployeeId = id,
+                    EmployeeName = employee.Name,
+                    Date = date,
+                    InTime = null,
+                    OutTime = null,
+                    Status = AttendanceStatus.Absent,
+                    Note = null
+                };
+            }).ToList();
+
+            return Ok(result);
         }
         
         [HttpGet("employee")]
-        [Authorize(Roles = "Employee, HR")]
+        [Authorize(Roles = "Employee,HR")]
         public async Task<IActionResult> GetEmployeeAttendance()
         {
             var userId = User.FindFirstValue("uid");
@@ -92,25 +117,44 @@ namespace EmployeeManagementApi.Controllers
 
             var employee = user.Employee;
 
-            var allAttendance = await _context.Attendances
+            var dateOfJoining = DateOnly.FromDateTime(employee.DateOfJoining);
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            var allDates = Enumerable.Range(0, today.DayNumber - dateOfJoining.DayNumber + 1)
+                .Select(offset => dateOfJoining.AddDays(offset))
+                .ToList();
+
+            var userAttendance = await _context.Attendances
                 .Where(a => a.EmployeeId == employee.Id)
-                .OrderByDescending(a => a.Date)
                 .ToListAsync();
 
-            var result = allAttendance.Select(a =>
+            var result = allDates.Select(date =>
             {
-                return new AttendanceGetDto
+                var record = userAttendance.FirstOrDefault(a => DateOnly.FromDateTime(a.Date) == date);
+                return record != null
+                ? new AttendanceGetDto
                 {
-                    Id = a.Id,
-                    EmployeeId = a?.Employee?.Id,
-                    EmployeeName = a.Employee?.Name,
-                    Date = a.Date,
-                    InTime = a.InTime,
-                    OutTime = a.OutTime,
-                    Status = a.Status,
-                    Note = a.Note
+                    Id = record.Id,
+                    EmployeeId = record.EmployeeId,
+                    EmployeeName = employee.Name,
+                    Date = record.Date,
+                    InTime = record.InTime,
+                    OutTime = record.OutTime,
+                    Status = record.Status,
+                    Note = record.Note
+                } 
+                : new AttendanceGetDto
+                {
+                    Id = 0,
+                    EmployeeId = employee.Id,
+                    EmployeeName = employee.Name,
+                    Date = date.ToDateTime(TimeOnly.MinValue),
+                    InTime = null,
+                    OutTime = null,
+                    Status = AttendanceStatus.Absent,
+                    Note = null
                 };
-            }).ToList();
+            }).OrderByDescending(a => a.Date).ToList();
 
             return Ok(result);
         }
@@ -165,7 +209,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin,HR")]
         public async Task<IActionResult> GetAttendanceDetails(int id)
         {
             var attendance = await _context.Attendances

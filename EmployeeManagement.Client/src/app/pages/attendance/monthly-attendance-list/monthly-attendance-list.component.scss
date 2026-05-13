@@ -33,4 +33,54 @@ table {
     background-color: #ffebee;
     color: #c62828;
   }
+
+  &.chip-unmarked {
+    background-color: #ebf8ff;
+    color: #3028c6;
+  }
+}
+
+.export-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 36px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+
+  mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+  }
+
+  &.export-excel {
+    color: #16a34a;
+    border-color: #16a34a;
+    &:hover:not(:disabled) {
+      background-color: #dcfce7;
+    }
+  }
+
+  &.export-pdf {
+    color: #dc2626;
+    border-color: #dc2626;
+    &:hover:not(:disabled) {
+      background-color: #fee2e2;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
 }

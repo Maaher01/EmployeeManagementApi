@@ -9,6 +9,11 @@ import { Attendance } from 'src/app/models/attendance';
 import { Employee } from 'src/app/models/employee.interface';
 import { AttendanceService } from 'src/app/services/attendance.service';
 import { EmployeeService } from 'src/app/services/employee.service';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import * as XLSX from 'xlsx';
+import { displayTime } from 'src/app/shared/time.format';
+import { getMonthString } from 'src/app/shared/time.format';
 
 @Component({
   selector: 'app-monthly-attendance-list',
@@ -152,8 +157,62 @@ export class MonthlyAttendanceListComponent {
         return { label: 'Late', class: 'chip-late' };
       case 2:
         return { label: 'Absent', class: 'chip-absent' };
+      case 3:
+        return { label: 'Not Marked', class: 'chip-unmarked' };
       default:
         return { label: 'Unknown', class: '' };
     }
+  }
+
+  exportExcel() {
+    const data = this.monthlyAttendance.map((r) => ({
+      Date: new Date(r.date).toLocaleDateString('en-GB'),
+      'In Time': displayTime(r.inTime) ?? '—',
+      'Out Time': displayTime(r.outTime) ?? '—',
+      Status: this.getStatus(Number(r.status)).label,
+      Note: r.note || '—',
+    }));
+
+    const empName =
+      this.employees.find((e) => e.id === this.selectedEmployeeId)?.name ?? '';
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
+    XLSX.writeFile(
+      wb,
+      `${empName}_attendance_${getMonthString(this.monthControl.value!)}.xlsx`,
+    );
+  }
+
+  exportPDF() {
+    const doc = new jsPDF();
+    const month = this.monthControl.value?.toLocaleString('default', {
+      month: 'long',
+      year: 'numeric',
+    });
+    const empName =
+      this.employees.find((e) => e.id === this.selectedEmployeeId)?.name ?? '';
+
+    doc.setFontSize(14);
+    doc.text(`Attendance Report — ${empName}`, 14, 15);
+    doc.setFontSize(10);
+    doc.text(`Month: ${month}`, 14, 22);
+
+    autoTable(doc, {
+      startY: 28,
+      head: [['Date', 'In Time', 'Out Time', 'Note', 'Status']],
+      body: this.monthlyAttendance.map((r) => [
+        new Date(r.date).toLocaleDateString('en-GB'),
+        displayTime(r.inTime),
+        displayTime(r.outTime),
+        r.note || '—',
+        this.getStatus(Number(r.status)).label,
+      ]),
+      headStyles: { fillColor: [63, 81, 181] },
+    });
+
+    doc.save(
+      `${empName}_attendance_${getMonthString(this.monthControl.value!)}.pdf`,
+    );
   }
 }

@@ -3,10 +3,19 @@ import { MaterialModule } from '../../material.module';
 import { AttendanceMarkCardComponent } from 'src/app/components/attendance-mark-card/attendance-mark-card.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { DecodedToken } from 'src/app/models/decoded-token.interface';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { MonthlyAttendanceChartComponent } from 'src/app/components/monthly-attendance-chart/monthly-attendance-chart.component';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [MaterialModule, AttendanceMarkCardComponent],
+  imports: [
+    CommonModule,
+    MaterialModule,
+    AttendanceMarkCardComponent,
+    MonthlyAttendanceChartComponent,
+    ReactiveFormsModule,
+  ],
   templateUrl: './dashboard.component.html',
   encapsulation: ViewEncapsulation.None,
 })

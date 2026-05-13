@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from 'src/app/material.module';
 import { Employee } from 'src/app/models/employee.interface';
@@ -7,6 +7,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { WarningDialogComponent } from 'src/app/components/warning-dialog/warning-dialog.component';
 import { RouterModule } from '@angular/router';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-employee-list',
@@ -14,7 +16,7 @@ import { RouterModule } from '@angular/router';
   templateUrl: './employee-list.component.html',
 })
 export class EmployeeListComponent implements OnInit {
-  employees: Employee[];
+  employees = new MatTableDataSource<Employee>([]);
   errorResponse: any;
   displayedColumns: string[] = [
     'id',
@@ -24,7 +26,8 @@ export class EmployeeListComponent implements OnInit {
     'dateOfJoining',
     'action',
   ];
-  dataSource: Employee[] = [];
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private employeeService: EmployeeService,
@@ -35,11 +38,15 @@ export class EmployeeListComponent implements OnInit {
     this.getAllEmployees();
   }
 
+  ngAfterViewInit() {
+    this.employees.paginator = this.paginator;
+  }
+
   getAllEmployees() {
     this.employeeService.getAllEmployees().subscribe({
       next: (res) => {
-        this.employees = res;
-        this.dataSource = this.employees;
+        this.employees.data = res;
+        // this.dataSource = this.employees;
       },
       error: (err) => {
         this.errorResponse = err.error.message;

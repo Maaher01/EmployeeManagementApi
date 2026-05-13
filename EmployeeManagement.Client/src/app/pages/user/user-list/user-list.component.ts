@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { UserEditDialogComponent } from 'src/app/components/user-edit-dialog/user-edit-dialog.component';
@@ -17,11 +19,12 @@ import { UserService } from 'src/app/services/user.service';
   templateUrl: './user-list.component.html',
 })
 export class UserListComponent implements OnInit {
-  users: User[] = [];
+  users = new MatTableDataSource<User>([]);
   currentUser: DecodedToken | null = null;
   errorResponse: any;
   displayedColumns: string[] = ['email', 'role', 'action'];
-  dataSource: User[] = [];
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private userService: UserService,
@@ -36,11 +39,14 @@ export class UserListComponent implements OnInit {
     );
   }
 
+  ngAfterViewInit() {
+    this.users.paginator = this.paginator;
+  }
+
   getAllUsers() {
     this.userService.getAllUsers().subscribe({
       next: (res) => {
-        this.users = res;
-        this.dataSource = this.users;
+        this.users.data = res;
       },
       error: (err) => {
         this.errorResponse = err.error.message;

@@ -76,8 +76,11 @@
                 </tr>
 
             </table>
+
+
         </div>
         }
-
+        <mat-paginator [pageSize]="10" showFirstLastButtons [style.display]="isLoading ? 'none' : ''">
+        </mat-paginator>
     </mat-card-content>
 </mat-card>

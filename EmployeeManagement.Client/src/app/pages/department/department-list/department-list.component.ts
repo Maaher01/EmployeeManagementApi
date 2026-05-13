@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MaterialModule } from 'src/app/material.module';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
@@ -7,6 +7,8 @@ import { DepartmentService } from 'src/app/services/department.service';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { WarningDialogComponent } from 'src/app/components/warning-dialog/warning-dialog.component';
 import { DepartmentEditDialogComponent } from 'src/app/components/department-edit-dialog/department-edit-dialog.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-department-list',
@@ -14,10 +16,11 @@ import { DepartmentEditDialogComponent } from 'src/app/components/department-edi
   templateUrl: './department-list.component.html',
 })
 export class DepartmentListComponent implements OnInit {
-  departments: Department[];
+  departments = new MatTableDataSource<Department>([]);
   errorResponse: any;
   displayedColumns: string[] = ['name', 'action'];
-  dataSource: Department[] = [];
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private departmentService: DepartmentService,
@@ -28,11 +31,14 @@ export class DepartmentListComponent implements OnInit {
     this.getAllDepartments();
   }
 
+  ngAfterViewInit() {
+    this.departments.paginator = this.paginator;
+  }
+
   getAllDepartments() {
     this.departmentService.getAllDepartments().subscribe({
       next: (res) => {
-        this.departments = res;
-        this.dataSource = this.departments;
+        this.departments.data = res;
       },
       error: (err) => {
         this.errorResponse = err.error.message;

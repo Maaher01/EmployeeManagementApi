@@ -1,0 +1,57 @@
+<mat-card class="cardWithShadow theme-card">
+    <mat-card-header>
+        <div class="chart-header">
+            <mat-card-title class="m-b-0">Today's Attendance</mat-card-title>
+            <mat-form-field appearance="outline" class="date-field">
+                <mat-label>Date</mat-label>
+                <input matInput [matDatepicker]="picker" [formControl]="dateControl" [max]="today" readonly />
+                <mat-datepicker-toggle matIconSuffix [for]="picker" />
+                <mat-datepicker #picker />
+            </mat-form-field>
+        </div>
+    </mat-card-header>
+
+    <mat-card-content class="b-t-1">
+
+        @if (isLoading) {
+        <div class="flex justify-center items-center p-8">
+            <mat-spinner diameter="40" />
+        </div>
+        }
+
+        @if (!isLoading && attendanceCount) {
+        <div class="chart-body">
+
+            <!-- Summary stats -->
+            <div class="stat-row">
+                <div class="stat-card stat-present">
+                    <span class="stat-label">Present</span>
+                    <span class="stat-value">{{ attendanceCount.present }}</span>
+                </div>
+                <div class="stat-card stat-absent">
+                    <span class="stat-label">Absent</span>
+                    <span class="stat-value">{{ attendanceCount.absent }}</span>
+                </div>
+                <div class="stat-card stat-total">
+                    <span class="stat-label">Total</span>
+                    <span class="stat-value">{{ attendanceCount.present + attendanceCount.absent }}</span>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="chart-wrap">
+                <apx-chart [series]="chartOptions.series!" [chart]="chartOptions.chart!" [labels]="chartOptions.labels!"
+                    [colors]="chartOptions.colors!" [legend]="chartOptions.legend!"
+                    [dataLabels]="chartOptions.dataLabels!" [tooltip]="chartOptions.tooltip!"
+                    [responsive]="chartOptions.responsive!" />
+            </div>
+
+        </div>
+        }
+
+        @if (!isLoading && !attendanceCount) {
+        <p class="no-data">No data available for this date.</p>
+        }
+
+    </mat-card-content>
+</mat-card>

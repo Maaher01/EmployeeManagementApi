@@ -1,8 +1,10 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AttendanceDetailsDialogComponent } from 'src/app/components/attendance-details-dialog/attendance-details-dialog.component';
 import { MaterialModule } from 'src/app/material.module';
@@ -17,7 +19,7 @@ import { AttendanceService } from 'src/app/services/attendance.service';
   styleUrl: './attendance-list.component.scss',
 })
 export class AttendanceListComponent implements OnInit {
-  attendance: Attendance[] = [];
+  attendance = new MatTableDataSource<Attendance>([]);
   dateControl = new FormControl(new Date());
   errorResponse: any;
   isLoading: boolean = false;
@@ -30,6 +32,8 @@ export class AttendanceListComponent implements OnInit {
     'actions',
   ];
   dataSource: any;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -52,6 +56,10 @@ export class AttendanceListComponent implements OnInit {
         });
       }
     });
+  }
+
+  ngAfterViewInit() {
+    this.attendance.paginator = this.paginator;
   }
 
   constructor(
@@ -87,7 +95,7 @@ export class AttendanceListComponent implements OnInit {
     const dateStr = formatDate(date, 'yyyy-MM-dd', 'en');
     this.attendanceService.getAttendanceByDate(dateStr).subscribe({
       next: (res) => {
-        this.attendance = res;
+        this.attendance.data = res;
         this.dataSource = this.attendance;
         this.isLoading = false;
       },

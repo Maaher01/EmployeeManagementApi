@@ -5,5 +5,6 @@
         Present,
         Late,
         Absent,
+        NotMarked
     }
 }

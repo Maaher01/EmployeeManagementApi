@@ -4,4 +4,9 @@
     <app-attendance-mark-card></app-attendance-mark-card>
     }
   </div>
+  <div class="col-span-12">
+    @if(currentUser?.role === "Admin"|| currentUser?.role === "HR") {
+    <app-monthly-attendance-chart></app-monthly-attendance-chart>
+    }
+  </div>
 </div>

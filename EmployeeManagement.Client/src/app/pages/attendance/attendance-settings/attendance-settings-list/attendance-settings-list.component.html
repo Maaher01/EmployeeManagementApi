@@ -3,9 +3,7 @@
     <button matButton="filled" routerLink="/attendance/settings/add">
       <mat-icon>add</mat-icon>Add Settings
     </button>
-    <mat-card-title style="margin-top: 30px"
-      >All Attendance Settings</mat-card-title
-    >
+    <mat-card-title style="margin-top: 30px">All Attendance Settings</mat-card-title>
     <!-- Table -->
     <div class="table-container">
       <table mat-table [dataSource]="dataSource">
@@ -60,5 +58,7 @@
         </tr>
       </table>
     </div>
+    <mat-paginator [pageSize]="10" showFirstLastButtons>
+    </mat-paginator>
   </mat-card-content>
 </mat-card>

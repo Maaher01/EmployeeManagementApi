@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { AttendanceSettingEditDialogComponent } from 'src/app/components/attendance-setting-edit-dialog/attendance-setting-edit-dialog.component';
 import { MaterialModule } from 'src/app/material.module';
@@ -14,7 +16,7 @@ import { AttendanceSettingService } from 'src/app/services/attendance-setting.se
   styleUrl: './attendance-settings-list.component.scss',
 })
 export class AttendanceSettingsListComponent implements OnInit {
-  settings: AttendanceSetting[];
+  settings = new MatTableDataSource<AttendanceSetting>([]);
   errorResponse: any;
   displayedColumns: string[] = [
     'departmentName',
@@ -25,6 +27,8 @@ export class AttendanceSettingsListComponent implements OnInit {
   ];
   dataSource: any;
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   constructor(
     private attendanceSettingService: AttendanceSettingService,
     private dialog: MatDialog,
@@ -34,10 +38,14 @@ export class AttendanceSettingsListComponent implements OnInit {
     this.getAllSettings();
   }
 
+  ngAfterViewInit() {
+    this.settings.paginator = this.paginator;
+  }
+
   getAllSettings() {
     this.attendanceSettingService.getAttendanceSettings().subscribe({
       next: (res) => {
-        this.settings = res;
+        this.settings.data = res;
         this.dataSource = this.settings;
       },
       error: (err) => {

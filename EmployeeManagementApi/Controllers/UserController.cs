@@ -22,7 +22,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles ="Admin, HR")]
+        [Authorize(Roles ="Admin,HR")]
         public async Task<IActionResult> GetUsers()
         {
             var users = await _userManager.Users.OrderBy(u => u.CreatedAt).ToListAsync();
@@ -43,7 +43,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin,HR")]
         public async Task<IActionResult> AddUser([FromBody] UserCreateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -82,7 +82,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin,HR")]
         public async Task<IActionResult> UpdateUser(string id, [FromBody] UserUpdateDto dto)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -108,7 +108,7 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin,HR")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await _context.Users.FindAsync(id);

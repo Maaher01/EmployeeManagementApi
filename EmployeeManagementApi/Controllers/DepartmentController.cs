@@ -8,7 +8,7 @@ namespace EmployeeManagementApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin, HR")]
+    [Authorize(Roles = "Admin,HR")]
     public class DepartmentController : ControllerBase
     {
         private readonly EmployeeDbContext _context;
