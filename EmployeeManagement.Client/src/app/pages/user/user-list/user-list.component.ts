@@ -34,6 +34,7 @@ export class UserListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllUsers();
+
     this.authService.$currentUser.subscribe(
       (user) => (this.currentUser = user),
     );

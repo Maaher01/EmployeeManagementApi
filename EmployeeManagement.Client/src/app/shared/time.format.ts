@@ -23,3 +23,16 @@ export function getMonthString(date: Date): string {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   return `${year}_${month}`;
 }
+
+export function getDayNames(days: number[]): string {
+  const names = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+  return days.map((d) => names[d]).join(', ') || '_';
+}

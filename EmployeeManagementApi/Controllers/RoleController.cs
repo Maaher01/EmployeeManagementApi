@@ -1,4 +1,5 @@
 ﻿using EmployeeManagementApi.Dtos.Role;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -7,6 +8,7 @@ namespace EmployeeManagementApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin,HR")]
     public class RoleController : ControllerBase
     {
         private readonly RoleManager<IdentityRole> _roleManager;

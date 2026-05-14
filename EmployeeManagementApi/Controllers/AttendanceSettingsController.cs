@@ -8,6 +8,7 @@ namespace EmployeeManagementApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin,HR")]
     public class AttendanceSettingsController : ControllerBase
     {
         private readonly EmployeeDbContext _context;
@@ -18,7 +19,6 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,HR")]
         public async Task<IActionResult> GetSettings()
         {
             var settings = await _context.AttendanceSettings
@@ -36,7 +36,6 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,HR")]
         public async Task<IActionResult> AddSettings([FromBody] AttendanceSettingCreateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -62,7 +61,6 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,HR")]
         public async Task<IActionResult> UpdateSettings(int id, [FromBody] AttendanceSettingUpdateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);

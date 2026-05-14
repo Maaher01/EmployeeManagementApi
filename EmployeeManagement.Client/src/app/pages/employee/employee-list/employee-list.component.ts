@@ -46,7 +46,6 @@ export class EmployeeListComponent implements OnInit {
     this.employeeService.getAllEmployees().subscribe({
       next: (res) => {
         this.employees.data = res;
-        // this.dataSource = this.employees;
       },
       error: (err) => {
         this.errorResponse = err.error.message;

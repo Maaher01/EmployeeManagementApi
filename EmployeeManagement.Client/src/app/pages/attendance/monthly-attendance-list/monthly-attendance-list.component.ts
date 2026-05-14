@@ -158,7 +158,7 @@ export class MonthlyAttendanceListComponent {
       case 2:
         return { label: 'Absent', class: 'chip-absent' };
       case 3:
-        return { label: 'Not Marked', class: 'chip-unmarked' };
+        return { label: 'Weekend', class: 'chip-weekend' };
       default:
         return { label: 'Unknown', class: '' };
     }

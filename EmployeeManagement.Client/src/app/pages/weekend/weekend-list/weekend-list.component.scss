@@ -1,0 +1,18 @@
+.dept-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .dept-icon {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+    color: #6366f1;
+    opacity: 0.8;
+  }
+}
+
+.no-weekend {
+  color: #9ca3af;
+  font-size: 14px;
+}

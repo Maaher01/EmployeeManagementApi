@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EmployeeManagementApi.Controllers
 {
@@ -28,15 +27,35 @@ namespace EmployeeManagementApi.Controllers
                 .Select(e => new
                 {
                     e.Id,
-                    e.Name
+                    e.Name,
+                    e.DepartmentId
                 }).ToListAsync();
 
             var existingRecords = await _context.Attendances
                 .Where(a => a.Date == date)
                 .ToListAsync();
 
+            var allWeekends = await _context.Weekends.ToListAsync();
+
             var result = employees.Select(e =>
             {
+                var weekendDays = allWeekends
+                    .Where(w => w.DepartmentId == e.DepartmentId)
+                    .Select(w => w.Day)
+                    .ToList();
+                if(weekendDays.Contains(date.DayOfWeek))
+                {
+                    return new AttendanceGetDto
+                    {
+                        EmployeeName = e.Name,
+                        Date = date,
+                        InTime = null,
+                        OutTime = null,
+                        Status = AttendanceStatus.Weekend,
+                        Note = null
+                    };
+                }
+
                 var record = existingRecords.FirstOrDefault(a => a.EmployeeId == e.Id);
 
                 return new AttendanceGetDto
@@ -65,6 +84,11 @@ namespace EmployeeManagementApi.Controllers
                 .Where(a => a.EmployeeId == id && a.Date.Month == month && a.Date.Year == year)
                 .ToListAsync();
 
+            var weekendDays = await _context.Weekends
+                .Where(w => w.DepartmentId == employee.DepartmentId)
+                .Select(w => w.Day)
+                .ToListAsync();
+
             var today = DateTime.Today;
 
             var daysInMonth = DateTime.DaysInMonth(year, month);
@@ -75,6 +99,20 @@ namespace EmployeeManagementApi.Controllers
 
             var result = allDates.Select(date =>
             {
+                if (weekendDays.Contains(date.DayOfWeek))
+                {
+                    return new AttendanceGetDto
+                    {
+                        Date = date,
+                        Status = AttendanceStatus.Weekend,
+                        EmployeeId = employee.Id,
+                        EmployeeName = employee.Name,
+                        InTime = null,
+                        OutTime = null,
+                        Note = null
+                    };
+                }
+
                 var record = attendances.FirstOrDefault(a => a.Date == date);
                 return record != null
                 ? new AttendanceGetDto
@@ -117,6 +155,11 @@ namespace EmployeeManagementApi.Controllers
 
             var employee = user.Employee;
 
+            var weekendDays = await _context.Weekends
+                .Where(w => w.DepartmentId == employee.DepartmentId)
+                .Select(w => w.Day)
+                .ToListAsync();
+
             var dateOfJoining = DateOnly.FromDateTime(employee.DateOfJoining);
             var today = DateOnly.FromDateTime(DateTime.Today);
 
@@ -130,6 +173,20 @@ namespace EmployeeManagementApi.Controllers
 
             var result = allDates.Select(date =>
             {
+                if (weekendDays.Contains(date.DayOfWeek))
+                {
+                    return new AttendanceGetDto
+                    {
+                        Date = date.ToDateTime(TimeOnly.MinValue),
+                        Status = AttendanceStatus.Weekend,
+                        EmployeeId = employee.Id,
+                        EmployeeName = employee.Name,
+                        InTime = null,
+                        OutTime = null,
+                        Note = null
+                    };
+                }
+
                 var record = userAttendance.FirstOrDefault(a => DateOnly.FromDateTime(a.Date) == date);
                 return record != null
                 ? new AttendanceGetDto

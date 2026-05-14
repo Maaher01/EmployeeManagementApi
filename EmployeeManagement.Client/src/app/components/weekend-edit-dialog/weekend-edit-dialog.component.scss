@@ -1,0 +1,28 @@
+.dept-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 16px;
+
+  mat-icon {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+    color: #6366f1;
+  }
+}
+
+.section-label {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.days-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

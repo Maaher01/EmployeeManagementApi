@@ -9,5 +9,6 @@ namespace EmployeeManagementApi.Models
         [Required]
         [StringLength(100)]
         public string Name { get; set; }
+        public ICollection<Weekend> Weekends { get; set; } = new List<Weekend>();
     }
 }

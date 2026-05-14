@@ -9,6 +9,7 @@ namespace EmployeeManagementApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin,HR")]
     public class DashboardController : ControllerBase
     {
         private readonly EmployeeDbContext _context;
@@ -19,7 +20,6 @@ namespace EmployeeManagementApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,HR")]
         public async Task<IActionResult> GetAttendanceByDate([FromQuery] DateTime date)
         {
             var employees = await _context.Employees

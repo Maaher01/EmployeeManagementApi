@@ -44,8 +44,6 @@ export class AttendanceListComponent implements OnInit {
       this.getAttendanceByDate(date);
     });
 
-    this.getAttendanceByDate(new Date());
-
     this.dateControl.valueChanges.subscribe((date) => {
       if (date) {
         const dateStr = formatDate(date, 'yyyy-MM-dd', 'en');
@@ -114,6 +112,8 @@ export class AttendanceListComponent implements OnInit {
         return { label: 'Late', class: 'chip-late' };
       case 2:
         return { label: 'Absent', class: 'chip-absent' };
+      case 3:
+        return { label: 'Weekend', class: 'chip-weekend' };
       default:
         return { label: 'Unknown', class: '' };
     }

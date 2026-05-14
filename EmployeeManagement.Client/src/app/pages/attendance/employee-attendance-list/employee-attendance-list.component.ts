@@ -53,6 +53,8 @@ export class EmployeeAttendanceListComponent implements OnInit {
         return { label: 'Late', class: 'chip-late' };
       case 2:
         return { label: 'Absent', class: 'chip-absent' };
+      case 3:
+        return { label: 'Weekend', class: 'chip-weekend' };
       default:
         return { label: 'Unknown', class: '' };
     }

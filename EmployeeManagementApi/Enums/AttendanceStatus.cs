@@ -5,6 +5,7 @@
         Present,
         Late,
         Absent,
-        NotMarked
+        Weekend,
+        Holiday
     }
 }

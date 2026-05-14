@@ -1,0 +1,78 @@
+<mat-card class="cardWithShadow theme-card">
+    <mat-card-header>
+        <div class="flex flex-row justify-between items-center w-100">
+            <mat-card-title class="m-b-0">Weekend Settings</mat-card-title>
+        </div>
+    </mat-card-header>
+
+    <mat-card-content class="b-t-1">
+
+        @if (isLoading) {
+        <div class="flex justify-center items-center p-8">
+            <mat-spinner diameter="40" />
+        </div>
+        }
+
+        @if (errorResponse) {
+        <mat-error class="p-4">{{ errorResponse }}</mat-error>
+        }
+
+        @if (!isLoading) {
+        <div class="table-responsive">
+            <table mat-table [dataSource]="weekends" class="w-100">
+
+                <!-- Department -->
+                <ng-container matColumnDef="departmentName">
+                    <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14">Department</th>
+                    <td mat-cell *matCellDef="let row">
+                        <div class="dept-cell">
+                            <mat-icon class="dept-icon">business</mat-icon>
+                            <span class="f-w-500">{{ row.departmentName }}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Weekend Days -->
+                <ng-container matColumnDef="weekendDays">
+                    <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14">Weekend Days</th>
+                    <td mat-cell *matCellDef="let row">
+                        <div>
+                            @if (row.weekendDays?.length) {
+                            @for (day of getDayNames(row.weekendDays); track day) {
+                            <span>{{ day }}</span>
+                            }
+                            } @else {
+                            <span class="no-weekend">—</span>
+                            }
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Actions -->
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14">Actions</th>
+                    <td mat-cell *matCellDef="let row">
+                        <button mat-icon-button color="primary" matTooltip="Edit Weekends" (click)="editWeekend(row)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td [colSpan]="displayedColumns.length" class="text-center p-8 text-gray-400">
+                        No departments found.
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+        }
+
+        <mat-paginator [pageSize]="10" showFirstLastButtons [style.display]="isLoading ? 'none' : ''">
+        </mat-paginator>
+
+    </mat-card-content>
+</mat-card>
