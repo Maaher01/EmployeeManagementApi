@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
-import { Weekend } from '../models/weekend';
+import { Weekend } from '../models/weekend.interface';
 import { Observable } from 'rxjs';
 
 @Injectable({

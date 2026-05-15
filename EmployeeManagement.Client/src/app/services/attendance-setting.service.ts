@@ -2,8 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { Observable } from 'rxjs';
-import { AttendanceSetting } from '../models/attendance-setting';
-import { AttendanceSettingAdd } from '../models/attendance-setting-add';
+import { AttendanceSetting } from '../models/attendance-setting.interface';
+import { AttendanceSettingAdd } from '../models/attendance-setting-add.interface';
 
 @Injectable({
   providedIn: 'root',

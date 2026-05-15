@@ -38,6 +38,12 @@ table {
     background-color: #ebf8ff;
     color: #3028c6;
   }
+
+  &.chip-holiday {
+    background-color: #f3f5f6;
+    color: #686767;
+    font-weight: 700;
+  }
 }
 
 .export-group {

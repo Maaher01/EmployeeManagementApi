@@ -25,7 +25,7 @@ import {
   ApexTheme,
   NgApexchartsModule,
 } from 'ng-apexcharts';
-import { AttendanceCount } from 'src/app/models/attendance-count';
+import { AttendanceCount } from 'src/app/models/attendance-count.interface';
 import { provideNativeDateAdapter } from '@angular/material/core';
 
 export type ChartOptions = {
@@ -105,11 +105,7 @@ export class MonthlyAttendanceChartComponent implements OnInit {
     ],
   };
 
-  constructor(
-    private dashboardService: DashboardService,
-    private route: ActivatedRoute,
-    private router: Router,
-  ) {}
+  constructor(private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
     this.getAttendanceCountByDate(this.today);

@@ -62,6 +62,12 @@ export const routes: Routes = [
           import('./pages/weekend/weekend.routes').then((m) => m.WeekendRoutes),
         canActivate: [roleGuard(['Admin', 'HR'])],
       },
+      {
+        path: 'holiday',
+        loadChildren: () =>
+          import('./pages/holiday/holiday.routes').then((m) => m.HolidayRoutes),
+        canActivate: [roleGuard(['Admin', 'HR'])],
+      },
     ],
   },
   {

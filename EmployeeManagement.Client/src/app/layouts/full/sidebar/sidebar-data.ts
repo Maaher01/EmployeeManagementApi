@@ -64,12 +64,12 @@ export const navItems: NavItem[] = [
     route: '/weekend',
     roles: ['Admin', 'HR'],
   },
-  // {
-  //   displayName: 'Holidays',
-  //   iconName: 'solar:wineglass-triangle-line-duotone',
-  //   route: '/holiday',
-  //   roles: ['Admin', 'HR'],
-  // },
+  {
+    displayName: 'Holidays',
+    iconName: 'solar:wineglass-triangle-line-duotone',
+    route: '/holiday',
+    roles: ['Admin', 'HR'],
+  },
   {
     navCap: 'ADMINISTRATION',
     divider: true,

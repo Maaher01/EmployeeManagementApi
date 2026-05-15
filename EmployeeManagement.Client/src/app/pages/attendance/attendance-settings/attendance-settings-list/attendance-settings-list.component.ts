@@ -6,7 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { AttendanceSettingEditDialogComponent } from 'src/app/components/attendance-setting-edit-dialog/attendance-setting-edit-dialog.component';
 import { MaterialModule } from 'src/app/material.module';
-import { AttendanceSetting } from 'src/app/models/attendance-setting';
+import { AttendanceSetting } from 'src/app/models/attendance-setting.interface';
 import { AttendanceSettingService } from 'src/app/services/attendance-setting.service';
 
 @Component({

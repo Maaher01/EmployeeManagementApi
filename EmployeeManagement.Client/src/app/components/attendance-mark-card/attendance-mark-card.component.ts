@@ -3,8 +3,8 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material.module';
 import { AttendanceMarkDialogComponent } from '../attendance-mark-dialog/attendance-mark-dialog.component';
 import { AttendanceService } from 'src/app/services/attendance.service';
-import { Attendance } from 'src/app/models/attendance';
-import { displayTime } from 'src/app/shared/time.format';
+import { Attendance } from 'src/app/models/attendance.interface';
+import { displayTime } from 'src/app/shared/date-time.format';
 import { OutTimeSubmitDialogComponent } from '../out-time-submit-dialog/out-time-submit-dialog.component';
 
 @Component({

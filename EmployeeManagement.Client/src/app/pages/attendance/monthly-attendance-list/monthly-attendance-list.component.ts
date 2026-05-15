@@ -5,15 +5,15 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MaterialModule } from 'src/app/material.module';
-import { Attendance } from 'src/app/models/attendance';
+import { Attendance } from 'src/app/models/attendance.interface';
 import { Employee } from 'src/app/models/employee.interface';
 import { AttendanceService } from 'src/app/services/attendance.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
-import { displayTime } from 'src/app/shared/time.format';
-import { getMonthString } from 'src/app/shared/time.format';
+import { displayTime } from 'src/app/shared/date-time.format';
+import { getMonthString } from 'src/app/shared/date-time.format';
 
 @Component({
   selector: 'app-monthly-attendance-list',
@@ -159,6 +159,8 @@ export class MonthlyAttendanceListComponent {
         return { label: 'Absent', class: 'chip-absent' };
       case 3:
         return { label: 'Weekend', class: 'chip-weekend' };
+      case 4:
+        return { label: 'Holiday', class: 'chip-holiday' };
       default:
         return { label: 'Unknown', class: '' };
     }

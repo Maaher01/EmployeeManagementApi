@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MaterialModule } from 'src/app/material.module';
-import { Attendance } from 'src/app/models/attendance';
+import { Attendance } from 'src/app/models/attendance.interface';
 import { AttendanceService } from 'src/app/services/attendance.service';
 
 @Component({
@@ -55,6 +55,8 @@ export class EmployeeAttendanceListComponent implements OnInit {
         return { label: 'Absent', class: 'chip-absent' };
       case 3:
         return { label: 'Weekend', class: 'chip-weekend' };
+      case 4:
+        return { label: 'Holiday', class: 'chip-holiday' };
       default:
         return { label: 'Unknown', class: '' };
     }

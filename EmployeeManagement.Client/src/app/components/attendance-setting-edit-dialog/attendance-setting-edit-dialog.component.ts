@@ -9,7 +9,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material.module';
 import { AttendanceSettingService } from 'src/app/services/attendance-setting.service';
-import { formatTime, parseTime } from 'src/app/shared/time.format';
+import { formatTime, parseTime } from 'src/app/shared/date-time.format';
 
 @Component({
   selector: 'app-attendance-setting-edit-dialog',

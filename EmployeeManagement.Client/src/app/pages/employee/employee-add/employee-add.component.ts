@@ -13,7 +13,7 @@ import { DepartmentService } from 'src/app/services/department.service';
 import {
   fileSizeValidator,
   fileTypeValidator,
-} from 'src/app/shared/validators/file.validators';
+} from 'src/app/shared/validators/file.validator';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { EmployeeAdd } from 'src/app/models/employee-add.interface';
 import { MaterialModule } from 'src/app/material.module';

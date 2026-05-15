@@ -8,7 +8,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AttendanceDetailsDialogComponent } from 'src/app/components/attendance-details-dialog/attendance-details-dialog.component';
 import { MaterialModule } from 'src/app/material.module';
-import { Attendance } from 'src/app/models/attendance';
+import { Attendance } from 'src/app/models/attendance.interface';
 import { AttendanceService } from 'src/app/services/attendance.service';
 
 @Component({
@@ -114,6 +114,8 @@ export class AttendanceListComponent implements OnInit {
         return { label: 'Absent', class: 'chip-absent' };
       case 3:
         return { label: 'Weekend', class: 'chip-weekend' };
+      case 4:
+        return { label: 'Holiday', class: 'chip-holiday' };
       default:
         return { label: 'Unknown', class: '' };
     }

@@ -13,7 +13,7 @@ import { EmployeeService } from 'src/app/services/employee.service';
 import {
   fileSizeValidator,
   fileTypeValidator,
-} from 'src/app/shared/validators/file.validators';
+} from 'src/app/shared/validators/file.validator';
 import { ActivatedRoute } from '@angular/router';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { DepartmentService } from 'src/app/services/department.service';

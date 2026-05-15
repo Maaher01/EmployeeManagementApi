@@ -9,11 +9,11 @@ import {
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { Router } from '@angular/router';
 import { MaterialModule } from 'src/app/material.module';
-import { AttendanceSettingAdd } from 'src/app/models/attendance-setting-add';
+import { AttendanceSettingAdd } from 'src/app/models/attendance-setting-add.interface';
 import { Department } from 'src/app/models/department.interface';
 import { AttendanceSettingService } from 'src/app/services/attendance-setting.service';
 import { DepartmentService } from 'src/app/services/department.service';
-import { formatTime } from 'src/app/shared/time.format';
+import { formatTime } from 'src/app/shared/date-time.format';
 
 @Component({
   selector: 'app-attendance-settings-add',

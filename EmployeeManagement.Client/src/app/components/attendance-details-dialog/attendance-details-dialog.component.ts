@@ -46,6 +46,10 @@ export class AttendanceDetailsDialogComponent {
         return { label: 'Late', class: 'chip-late' };
       case 2:
         return { label: 'Absent', class: 'chip-absent' };
+      case 3:
+        return { label: 'Weekend', class: 'chip-weekend' };
+      case 4:
+        return { label: 'Holiday', class: 'chip-holiday' };
       default:
         return { label: 'Unknown', class: '' };
     }

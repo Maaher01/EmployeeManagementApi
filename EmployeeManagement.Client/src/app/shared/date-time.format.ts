@@ -36,3 +36,11 @@ export function getDayNames(days: number[]): string {
   ];
   return days.map((d) => names[d]).join(', ') || '_';
 }
+
+export function getDuration(startDate: string, endDate: string): number {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const diff =
+    Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+  return diff;
+}

@@ -4,6 +4,7 @@ using EmployeeManagementApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Security.Claims;
 
 namespace EmployeeManagementApi.Controllers
@@ -36,6 +37,11 @@ namespace EmployeeManagementApi.Controllers
                 .ToListAsync();
 
             var allWeekends = await _context.Weekends.ToListAsync();
+            var allHolidays = await _context.Holidays
+                    .Select(h => new { h.StartDate, h.EndDate })
+                    .ToListAsync();
+
+            var dateOnly = DateOnly.FromDateTime(date);
 
             var result = employees.Select(e =>
             {
@@ -56,8 +62,21 @@ namespace EmployeeManagementApi.Controllers
                     };
                 }
 
-                var record = existingRecords.FirstOrDefault(a => a.EmployeeId == e.Id);
+                var isHoliday = allHolidays.Any(h => dateOnly >= h.StartDate && dateOnly <= h.EndDate);
+                if(isHoliday)
+                {
+                    return new AttendanceGetDto
+                    {
+                        EmployeeName = e.Name,
+                        Date = date,
+                        InTime = null,
+                        OutTime = null,
+                        Status = AttendanceStatus.Holiday,
+                        Note = null
+                    };
+                }
 
+                var record = existingRecords.FirstOrDefault(a => a.EmployeeId == e.Id);
                 return new AttendanceGetDto
                 {
                     EmployeeName = e.Name,
@@ -88,6 +107,9 @@ namespace EmployeeManagementApi.Controllers
                 .Where(w => w.DepartmentId == employee.DepartmentId)
                 .Select(w => w.Day)
                 .ToListAsync();
+            var allHolidays = await _context.Holidays
+                .Select(h => new { h.StartDate, h.EndDate })
+                .ToListAsync();
 
             var today = DateTime.Today;
 
@@ -99,6 +121,8 @@ namespace EmployeeManagementApi.Controllers
 
             var result = allDates.Select(date =>
             {
+                var dateOnly = DateOnly.FromDateTime(date);
+
                 if (weekendDays.Contains(date.DayOfWeek))
                 {
                     return new AttendanceGetDto
@@ -109,6 +133,20 @@ namespace EmployeeManagementApi.Controllers
                         EmployeeName = employee.Name,
                         InTime = null,
                         OutTime = null,
+                        Note = null
+                    };
+                }
+
+                var isHoliday = allHolidays.Any(h => dateOnly >= h.StartDate && dateOnly <= h.EndDate);
+                if (isHoliday)
+                {
+                    return new AttendanceGetDto
+                    {
+                        EmployeeName = employee.Name,
+                        Date = date,
+                        InTime = null,
+                        OutTime = null,
+                        Status = AttendanceStatus.Holiday,
                         Note = null
                     };
                 }
@@ -159,6 +197,9 @@ namespace EmployeeManagementApi.Controllers
                 .Where(w => w.DepartmentId == employee.DepartmentId)
                 .Select(w => w.Day)
                 .ToListAsync();
+            var allHolidays = await _context.Holidays
+                .Select(h => new { h.StartDate, h.EndDate })
+                .ToListAsync();
 
             var dateOfJoining = DateOnly.FromDateTime(employee.DateOfJoining);
             var today = DateOnly.FromDateTime(DateTime.Today);
@@ -183,6 +224,20 @@ namespace EmployeeManagementApi.Controllers
                         EmployeeName = employee.Name,
                         InTime = null,
                         OutTime = null,
+                        Note = null
+                    };
+                }
+
+                var isHoliday = allHolidays.Any(h => date >= h.StartDate && date <= h.EndDate);
+                if (isHoliday)
+                {
+                    return new AttendanceGetDto
+                    {
+                        EmployeeName = employee.Name,
+                        Date = date.ToDateTime(TimeOnly.MinValue),
+                        InTime = null,
+                        OutTime = null,
+                        Status = AttendanceStatus.Holiday,
                         Note = null
                     };
                 }

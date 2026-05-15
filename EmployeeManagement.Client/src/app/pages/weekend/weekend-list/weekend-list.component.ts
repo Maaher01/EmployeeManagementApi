@@ -4,9 +4,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { WeekendEditDialogComponent } from 'src/app/components/weekend-edit-dialog/weekend-edit-dialog.component';
 import { MaterialModule } from 'src/app/material.module';
-import { Weekend } from 'src/app/models/weekend';
+import { Weekend } from 'src/app/models/weekend.interface';
 import { WeekendService } from 'src/app/services/weekend.service';
-import { getDayNames } from 'src/app/shared/time.format';
+import { getDayNames } from 'src/app/shared/date-time.format';
 
 @Component({
   selector: 'app-weekend-list',
